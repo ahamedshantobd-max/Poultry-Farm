@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Poultry Farm">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUG91bHRyeSBGYXJtIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiUG91bHRyeSIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMWExYTFhIiwidGhlbWVfY29sb3IiOiIjNENBRjUwIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NjaXJjbGUgY3g9JzUwJyBjeT0nNTAnIHI9JzUwJyBmaWxsPSclMjM0Q0FGNTAnLyUzRSUzQ3RleHQgeD0nNTAlMjUnIHk9JzUwJTI1JyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjNlbSclM0UlRjAlOUYlOTAlOTQlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <title>পোল্ট্রি ফার্ম ম্যানেজার</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding-bottom: 80px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .install-prompt {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 12px;
+            border: 2px dashed #4CAF50;
+            text-align: center;
+            display: none;
+        }
+        
+        .install-prompt.show {
+            display: block;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:active {
+            background: #45a049;
+            transform: scale(0.98);
+        }
+        
+        .btn-secondary {
+            background: #666;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            width: auto;
+            display: inline-block;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+        
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #333;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .batch-item {
+            background: #3a3a3a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .batch-item:active {
+            background: #4a4a4a;
+            transform: scale(0.99);
+        }
+        
+        .batch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .batch-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .batch-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .stat-item {
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            animation: fadeIn 0.2s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: #2a2a2a;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 500px;
+            border-radius: 12px;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            font-size: 30px;
+            cursor: pointer;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:active {
+            background: #444;
+        }
+        
+        .expense-item {
+            background: #3a3a3a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .summary-item {
+            background: rgba(255,255,255,0.1);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .summary-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .hide {
+            display: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            opacity: 0.6;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .list-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            color: #888;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐔 পোল্ট্রি ফার্ম ম্যানেজার</h1>
+    </div>
+
+    <div class="install-prompt" id="installPrompt">
+        <div style="font-size: 24px; margin-bottom: 10px;">📱</div>
+        <p><strong>হোম স্ক্রিনে যোগ করুন</strong></p>
+        <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">সহজ অ্যাক্সেসের জন্য এই অ্যাপটি ইনস্টল করুন</p>
+        <button class="btn btn-small" onclick="showInstallInstructions()">কিভাবে করবেন?</button>
+    </div>
+
+    <!-- Main Screen -->
+    <div id="mainScreen" class="container">
+        <button class="btn" onclick="showCreateBatch()">+ নতুন ব্যাচ তৈরি করুন</button>
+        <div id="batchList"></div>
+    </div>
+
+    <!-- Batch Details Screen -->
+    <div id="batchDetailsScreen" class="container hide">
+        <div class="summary-card">
+            <h2 id="batchDetailName">ব্যাচের নাম</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">মোট খরচ</div>
+                    <div class="summary-value" id="totalExpense">৳0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">জীবিত মুরগি</div>
+                    <div class="summary-value" id="aliveChicks">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">বিক্রয় পরিমাণ</div>
+                    <div class="summary-value" id="soldAmount">৳0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">লাভ/ক্ষতি</div>
+                    <div class="summary-value" id="profitLoss">৳0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 10px;">দ্রুত অ্যাকশন</h3>
+            <div class="action-buttons">
+                <button class="btn" onclick="showAddExpense()">+ খরচ</button>
+                <button class="btn" onclick="showAddDeath()">☠️ মৃত্যু</button>
+                <button class="btn" onclick="showAddSale()">💰 বিক্রয়</button>
+                <button class="btn btn-danger" onclick="confirmDeleteBatch()">🗑️ ডিলিট</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('expenses')">খরচ</button>
+                <button class="tab-btn" onclick="switchTab('deaths')">মৃত্যু</button>
+                <button class="tab-btn" onclick="switchTab('sales')">বিক্রয়</button>
+            </div>
+            <div id="expenseTab">
+                <div id="expenseList"></div>
+            </div>
+            <div id="deathTab" class="hide">
+                <div id="deathList"></div>
+            </div>
+            <div id="saleTab" class="hide">
+                <div id="saleList"></div>
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="backToMain()">← ফিরে যান</button>
+    </div>
+
+    <!-- Create Batch Modal -->
+    <div id="createBatchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>নতুন ব্যাচ তৈরি করুন</h2>
+                <span class="close-btn" onclick="closeModal('createBatchModal')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>ব্যাচের নাম *</label>
+                <input type="text" id="batchName" placeholder="যেমন: Color Bird -3">
+            </div>
+            <div class="input-group">
+                <label>মোট মুরগি *</label>
+                <input type="number" id="totalChicks" placeholder="যেমন: 700">
+            </div>
+            <div class="input-group">
+                <label>ক্রয়ের তারিখ *</label>
+                <input type="date" id="purchaseDate">
+            </div>
+            <div class="input-group">
+                <label>প্রাথমিক খরচ (মুরগি ক্রয়) *</label>
+                <input type="number" id="initialCost" placeholder="যেমন: 21000">
+            </div>
+            <div class="input-group">
+                <label>নোট (ঐচ্ছিক)</label>
+                <textarea id="batchNote" placeholder="অতিরিক্ত তথ্য"></textarea>
+            </div>
+            <button class="btn" onclick="createBatch()">ব্যাচ তৈরি করুন</button>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>খরচ যোগ করুন</h2>
+                <span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>খরচের ধরন *</label>
+                <select id="expenseType">
+                    <option value="feed">খাদ্য</option>
+                    <option value="medicine">ঔষধ</option>
+                    <option value="vaccine">টিকা</option>
+                    <option value="electricity">বিদ্যুৎ</option>
+                    <option value="transport">পরিবহন</option>
+                    <option value="labor">শ্রমিক</option>
+                    <option value="other">অন্যান্য</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>প্যাকেট/ইউনিট সংখ্যা</label>
+                <input type="number" id="expenseQuantity" placeholder="যেমন: 5" value="1">
+            </div>
+            <div class="input-group">
+                <label>প্রতি ইউনিট মূল্য (৳)</label>
+                <input type="number" id="expenseUnitPrice" placeholder="যেমন: 3000">
+            </div>
+            <div class="input-group">
+                <label>মোট খরচ (৳) *</label>
+                <input type="number" id="expenseAmount" placeholder="স্বয়ংক্রিয় গণনা">
+            </div>
+            <div class="input-group">
+                <label>তারিখ *</label>
+                <input type="date" id="expenseDate">
+            </div>
+            <div class="input-group">
+                <label>নোট (ঐচ্ছিক)</label>
+                <input type="text" id="expenseNote" placeholder="অতিরিক্ত তথ্য">
+            </div>
+            <button class="btn" onclick="addExpense()">খরচ যোগ করুন</button>
+        </div>
+    </div>
+
+    <!-- Add Death Modal -->
+    <div id="addDeathModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>মৃত্যু রেকর্ড করুন</h2>
+                <span class="close-btn" onclick="closeModal('addDeathModal')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>মৃত মুরগির সংখ্যা *</label>
+                <input type="number" id="deathCount" placeholder="যেমন: 5">
+            </div>
+            <div class="input-group">
+                <label>তারিখ *</label>
+                <input type="date" id="deathDate">
+            </div>
+            <div class="input-group">
+                <label>কারণ (ঐচ্ছিক)</label>
+                <input type="text" id="deathReason" placeholder="যেমন: রোগ">
+            </div>
+            <button class="btn" onclick="addDeath()">রেকর্ড করুন</button>
+        </div>
+    </div>
+
+    <!-- Add Sale Modal -->
+    <div id="addSaleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>বিক্রয় যোগ করুন</h2>
+                <span class="close-btn" onclick="closeModal('addSaleModal')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>বিক্রীত মুরগির সংখ্যা *</label>
+                <input type="number" id="soldChicks" placeholder="যেমন: 100">
+            </div>
+            <div class="input-group">
+                <label>মোট ওজন (কেজি) *</label>
+                <input type="number" step="0.01" id="soldWeight" placeholder="যেমন: 250">
+            </div>
+            <div class="input-group">
+                <label>প্রতি কেজি মূল্য (৳)</label>
+                <input type="number" id="pricePerKg" placeholder="যেমন: 180">
+            </div>
+            <div class="input-group">
+                <label>মোট বিক্রয় মূল্য (৳) *</label>
+                <input type="number" id="saleAmount" placeholder="স্বয়ংক্রিয় গণনা">
+            </div>
+            <div class="input-group">
+                <label>তারিখ *</label>
+                <input type="date" id="saleDate">
+            </div>
+            <div class="input-group">
+                <label>ক্রেতার নাম (ঐচ্ছিক)</label>
+                <input type="text" id="buyerName" placeholder="ক্রেতার নাম">
+            </div>
+            <button class="btn" onclick="addSale()">বিক্রয় যোগ করুন</button>
+        </div>
+    </div>
+
+    <!-- Install Instructions Modal -->
+    <div id="installModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ইনস্টল করার নির্দেশনা</h2>
+                <span class="close-btn" onclick="closeModal('installModal')">&times;</span>
+            </div>
+            <div style="line-height: 1.8;">
+                <h3 style="color: #4CAF50; margin-bottom: 10px;">Android Chrome:</h3>
+                <p>1. মেনু (⋮) ক্লিক করুন</p>
+                <p>2. "হোম স্ক্রিনে যোগ করুন" সিলেক্ট করুন</p>
+                <p>3. "যোগ করুন" ক্লিক করুন</p>
+                
+                <h3 style="color: #4CAF50; margin: 20px 0 10px;">iPhone Safari:</h3>
+                <p>1. শেয়ার বাটন (📤) ট্যাপ করুন</p>
+                <p>2. "হোম স্ক্রিনে যোগ করুন" সিলেক্ট করুন</p>
+                <p>3. "যোগ করুন" ট্যাপ করুন</p>
+            </div>
+            <button class="btn" onclick="closeModal('installModal')">বুঝেছি</button>
+        </div>
+    </div>
+
+    <script>
+        let batches = [];
+        let currentBatchId = null;
+        let currentTab = 'expenses';
+
+        // Check if app is installed
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('App is installed');
+        } else {
+            setTimeout(() => {
+                document.getElementById('installPrompt').classList.add('show');
+            }, 3000);
+        }
+
+        function showInstallInstructions() {
+            showModal('installModal');
+        }
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('poultryData');
+            if (saved) {
+                batches = JSON.parse(saved);
+            }
+        }
+
+        // Save data
+        function saveData() {
+            localStorage.setItem('poultryData', JSON.stringify(batches));
+        }
+
+        // Initialize
+        function init() {
+            loadData();
+            renderBatchList();
+            setTodayDates();
+        }
+
+        function setTodayDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('purchaseDate').value = today;
+            document.getElementById('expenseDate').value = today;
+            document.getElementById('deathDate').value = today;
+            document.getElementById('saleDate').value = today;
+        }
+
+        // Screen management
+        function showScreen(screenId) {
+            document.getElementById('mainScreen').classList.add('hide');
+            document.getElementById('batchDetailsScreen').classList.add('hide');
+            document.getElementById(screenId).classList.remove('hide');
+        }
+
+        function backToMain() {
+            showScreen('mainScreen');
+            currentBatchId = null;
+        }
+
+        // Modal management
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showCreateBatch() {
+            showModal('createBatchModal');
+        }
+
+        function showAddExpense() {
+            showModal('addExpenseModal');
+        }
+
+        function showAddDeath() {
+            showModal('addDeathModal');
+        }
+
+        function showAddSale() {
+            showModal('addSaleModal');
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('expenseTab').classList.add('hide');
+            document.getElementById('deathTab').classList.add('hide');
+            document.getElementById('saleTab').classList.add('hide');
+            
+            if (tab === 'expenses') document.getElementById('expenseTab').classList.remove('hide');
+            if (tab === 'deaths') document.getElementById('deathTab').classList.remove('hide');
+            if (tab === 'sales') document.getElementById('saleTab').classList.remove('hide');
+        }
+
+        // Create batch
+        function createBatch() {
+            const name = document.getElementById('batchName').value.trim();
+            const totalChicks = parseInt(document.getElementById('totalChicks').value);
+            const purchaseDate = document.getElementById('purchaseDate').value;
+            const initialCost = parseFloat(document.getElementById('initialCost').value);
+            const note = document.getElementById('batchNote').value.trim();
+
+            if (!name || !totalChicks || !purchaseDate || !initialCost) {
+                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
+                return;
+            }
+
+            const batch = {
+                id: Date.now(),
+                name,
+                totalChicks,
+                aliveChicks: totalChicks,
+                purchaseDate,
+                note,
+                expenses: [{
+                    id: Date.now(),
+                    type: 'purchase',
+                    amount: initialCost,
+                    date: purchaseDate,
+                    note: 'প্রাথমিক ক্রয়'
+                }],
+                deaths: [],
+                sales: []
+            };
+
+            batches.push(batch);
+            saveData();
+            renderBatchList();
+            closeModal('createBatchModal');
+            
+            document.getElementById('batchName').value = '';
+            document.getElementById('totalChicks').value = '';
+            document.getElementById('initialCost').value = '';
+            document.getElementById('batchNote').value = '';
+        }
+
+        // Render batch list
+        function renderBatchList() {
+            const list = document.getElementById('batchList');
+            if (batches.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>কোনো ব্যাচ নেই</p>
+                        <p style="font-size: 14px; opacity: 0.7; margin-top: 5px;">উপরের বাটনে ক্লিক করে নতুন ব্যাচ তৈরি করুন</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = batches.map(batch => {
+                const totalExpense = batch.expenses.reduce((sum, e) => sum + e.amount, 0);
+                const totalSales = batch.sales.reduce((sum, s) => sum + s.amount, 0);
+                const profit = totalSales - totalExpense;
+
+                return `
+                    <div class="batch-item" onclick="viewBatch(${batch.id})">
+                        <div class="batch-header">
+                            <div class="batch-name">${batch.name}</div>
+                            <div style="color: ${profit >= 0 ? '#4CAF50' : '#f44336'}">
+                                ${profit >= 0 ? '+' : ''}৳${profit.toLocaleString('bn-BD')}
+                            </div>
+                        </div>
+                        <div class="batch-stats">
+                            <div class="stat-item">মোট: ${batch.totalChicks}</div>
+                            <div class="stat-item">জীবিত: ${batch.aliveChicks}</div>
+                            <div class="stat-item">খরচ: ৳${totalExpense.toLocaleString('bn-BD')}</div>
+                            <div class="stat-item">বিক্রয়: ৳${totalSales.toLocaleString('bn-BD')}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View batch
+        function viewBatch(batchId) {
+            currentBatchId = batchId;
+            const batch = batches.find(b => b.id === batchId);
+            if (!batch) return;
+
+            const totalExpense = batch.expenses.reduce((sum, e) => sum + e.amount, 0);
+            const totalSales = batch.sales.reduce((sum, s) => sum + s.amount, 0);
+            const profit = totalSales - totalExpense;
+
+            document.getElementById('batchDetailName').textContent = batch.name;
+            document.getElementById('totalExpense').textContent = '৳' + totalExpense.toLocaleString('bn-BD');
+            document.getElementById('aliveChicks').textContent = batch.aliveChicks;
+            document.getElementById('soldAmount').textContent = '৳' + totalSales.toLocaleString('bn-BD');
+            document.getElementById('profitLoss').textContent = (profit >= 0 ? '+' : '') + '৳' + profit.toLocaleString('bn-BD');
+            document.getElementById('profitLoss').style.color = profit >= 0 ? '#4CAF50' : '#f44336';
+
+            renderExpenses(batch);
+            renderDeaths(batch);
+            renderSales(batch);
+
+            showScreen('batchDetailsScreen');
+        }
+
+        function renderExpenses(batch) {
+            const list = document.getElementById('expenseList');
+            if (batch.expenses.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>কোনো খরচ নেই</p></div>';
+                return;
+            }
+
+            const typeNames = {
+                purchase: 'ক্রয়',
+                feed: 'খাদ্য',
+                medicine: 'ঔষধ',
+                vaccine: 'টিকা',
+                electricity: 'বিদ্যুৎ',
+                transport: 'পরিবহন',
+                labor: 'শ্রমিক',
+                other: 'অন্যান্য'
+            };
+
+            list.innerHTML = batch.expenses.map(e => `
+                <div class="expense-item">
+                    <div>
+                        <div><strong>${typeNames[e.type]}</strong></div>
+                        <div style="font-size: 12px; opacity: 0.7;">${e.date}${e.note ? ' - ' + e.note : ''}</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <div style="font-size: 18px; font-weight: bold;">৳${e.amount.toLocaleString('bn-BD')}</div>
+                        ${e.type !== 'purchase' ? `<button class="delete-btn" onclick="deleteExpense(${e.id}, event)">✕</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDeaths(batch) {
+            const list = document.getElementById('deathList');
+            if (batch.deaths.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">☠️</div><p>কোনো মৃত্যুর রেকর্ড নেই</p></div>';
+                return;
+            }
+
+            list.innerHTML = batch.deaths.map(d => `
+                <div class="expense-item">
+                    <div>
+                        <div><strong>${d.count} টি মুরগি</strong></div>
+                        <div style="font-size: 12px; opacity: 0.7;">${d.date}${d.reason ? ' - ' + d.reason : ''}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteDeath(${d.id}, event)">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function renderSales(batch) {
+            const list = document.getElementById('saleList');
+            if (batch.sales.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>কোনো বিক্রয়ের রেকর্ড নেই</p></div>';
+                return;
+            }
+
+            list.innerHTML = batch.sales.map(s => `
+                <div class="expense-item">
+                    <div>
+                        <div><strong>${s.chicks} টি (${s.weight} কেজি)</strong></div>
+                        <div style="font-size: 12px; opacity: 0.7;">${s.date} - ৳${s.pricePerKg}/কেজি${s.buyerName ? ' - ' + s.buyerName : ''}</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <div style="font-size: 18px; font-weight: bold; color: #4CAF50;">৳${s.amount.toLocaleString('bn-BD')}</div>
+                        <button class="delete-btn" onclick="deleteSale(${s.id}, event)">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Delete functions
+        function deleteExpense(expenseId, event) {
+            event.stopPropagation();
+            if (!confirm('এই খরচ মুছে ফেলতে চান?')) return;
+            
+            const batch = batches.find(b => b.id === currentBatchId);
+            batch.expenses = batch.expenses.filter(e => e.id !== expenseId);
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+        }
+
+        function deleteDeath(deathId, event) {
+            event.stopPropagation();
+            if (!confirm('এই রেকর্ড মুছে ফেলতে চান?')) return;
+            
+            const batch = batches.find(b => b.id === currentBatchId);
+            const death = batch.deaths.find(d => d.id === deathId);
+            batch.aliveChicks += death.count;
+            batch.deaths = batch.deaths.filter(d => d.id !== deathId);
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+        }
+
+        function deleteSale(saleId, event) {
+            event.stopPropagation();
+            if (!confirm('এই বিক্রয় রেকর্ড মুছে ফেলতে চান?')) return;
+            
+            const batch = batches.find(b => b.id === currentBatchId);
+            const sale = batch.sales.find(s => s.id === saleId);
+            batch.aliveChicks += sale.chicks;
+            batch.sales = batch.sales.filter(s => s.id !== saleId);
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+        }
+
+        function confirmDeleteBatch() {
+            if (!confirm('⚠️ এই ব্যাচ সম্পূর্ণভাবে মুছে ফেলতে চান? সব ডেটা হারিয়ে যাবে!')) return;
+            
+            batches = batches.filter(b => b.id !== currentBatchId);
+            saveData();
+            backToMain();
+            renderBatchList();
+        }
+
+        // Expense calculations
+        document.getElementById('expenseQuantity').addEventListener('input', calculateExpenseTotal);
+        document.getElementById('expenseUnitPrice').addEventListener('input', calculateExpenseTotal);
+
+        function calculateExpenseTotal() {
+            const qty = parseFloat(document.getElementById('expenseQuantity').value) || 0;
+            const price = parseFloat(document.getElementById('expenseUnitPrice').value) || 0;
+            document.getElementById('expenseAmount').value = qty * price;
+        }
+
+        function addExpense() {
+            if (!currentBatchId) return;
+
+            const type = document.getElementById('expenseType').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const date = document.getElementById('expenseDate').value;
+            const note = document.getElementById('expenseNote').value.trim();
+
+            if (!amount || !date) {
+                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
+                return;
+            }
+
+            const batch = batches.find(b => b.id === currentBatchId);
+            batch.expenses.push({ 
+                id: Date.now(),
+                type, 
+                amount, 
+                date, 
+                note 
+            });
+
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+            closeModal('addExpenseModal');
+
+            document.getElementById('expenseQuantity').value = '1';
+            document.getElementById('expenseUnitPrice').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expenseNote').value = '';
+        }
+
+        // Death management
+        function addDeath() {
+            if (!currentBatchId) return;
+
+            const count = parseInt(document.getElementById('deathCount').value);
+            const date = document.getElementById('deathDate').value;
+            const reason = document.getElementById('deathReason').value.trim();
+
+            if (!count || !date) {
+                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
+                return;
+            }
+
+            const batch = batches.find(b => b.id === currentBatchId);
+            
+            if (count > batch.aliveChicks) {
+                alert('⚠️ জীবিত মুরগির চেয়ে বেশি সংখ্যা দেওয়া যাবে না!');
+                return;
+            }
+
+            batch.deaths.push({ 
+                id: Date.now(),
+                count, 
+                date, 
+                reason 
+            });
+            batch.aliveChicks -= count;
+
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+            closeModal('addDeathModal');
+
+            document.getElementById('deathCount').value = '';
+            document.getElementById('deathReason').value = '';
+        }
+
+        // Sale management
+        document.getElementById('soldWeight').addEventListener('input', calculateSaleTotal);
+        document.getElementById('pricePerKg').addEventListener('input', calculateSaleTotal);
+
+        function calculateSaleTotal() {
+            const weight = parseFloat(document.getElementById('soldWeight').value) || 0;
+            const price = parseFloat(document.getElementById('pricePerKg').value) || 0;
+            document.getElementById('saleAmount').value = weight * price;
+        }
+
+        function addSale() {
+            if (!currentBatchId) return;
+
+            const chicks = parseInt(document.getElementById('soldChicks').value);
+            const weight = parseFloat(document.getElementById('soldWeight').value);
+            const pricePerKg = parseFloat(document.getElementById('pricePerKg').value);
+            const amount = parseFloat(document.getElementById('saleAmount').value);
+            const date = document.getElementById('saleDate').value;
+            const buyerName = document.getElementById('buyerName').value.trim();
+
+            if (!chicks || !weight || !amount || !date) {
+                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
+                return;
+            }
+
+            const batch = batches.find(b => b.id === currentBatchId);
+            
+            if (chicks > batch.aliveChicks) {
+                alert('⚠️ জীবিত মুরগির চেয়ে বেশি সংখ্যা বিক্রয় করা যাবে না!');
+                return;
+            }
+
+            batch.sales.push({ 
+                id: Date.now(),
+                chicks, 
+                weight, 
+                pricePerKg, 
+                amount, 
+                date,
+                buyerName
+            });
+            batch.aliveChicks -= chicks;
+
+            saveData();
+            viewBatch(currentBatchId);
+            renderBatchList();
+            closeModal('addSaleModal');
+
+            document.getElementById('soldChicks').value = '';
+            document.getElementById('soldWeight').value = '';
+            document.getElementById('pricePerKg').value = '';
+            document.getElementById('saleAmount').value = '';
+            document.getElementById('buyerName').value = '';
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
