@@ -37,25 +37,62 @@
         .header h1 {
             font-size: 24px;
         }
-        
-        .install-prompt {
-            background: #2a2a2a;
-            padding: 15px;
-            margin: 20px;
-            border-radius: 12px;
-            border: 2px dashed #4CAF50;
-            text-align: center;
-            display: none;
+
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 12px;
+            opacity: 0.9;
         }
-        
-        .install-prompt.show {
-            display: block;
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 5px;
         }
         
         .container {
             padding: 20px;
             max-width: 600px;
             margin: 0 auto;
+        }
+
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            opacity: 0.7;
+            font-size: 14px;
         }
         
         .card {
@@ -84,9 +121,28 @@
             background: #45a049;
             transform: scale(0.98);
         }
+
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
         
         .btn-secondary {
             background: #666;
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-google:active {
+            background: #f0f0f0;
         }
         
         .btn-danger {
@@ -324,78 +380,207 @@
             background: #4CAF50;
             color: white;
         }
+
+        .sync-status {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: none;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .sync-status.show {
+            display: block;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #444;
+        }
+
+        .divider span {
+            background: #2a2a2a;
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🐔 পোল্ট্রি ফার্ম ম্যানেজার</h1>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🐔 পোল্ট্রি ফার্ম</h1>
+                <p>সব ডিভাইসে আপনার ডেটা অ্যাক্সেস করুন</p>
+            </div>
+
+            <button class="btn btn-google" onclick="signInWithGoogle()">
+                <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                Google দিয়ে সাইন ইন করুন
+            </button>
+
+            <div class="divider"><span>অথবা</span></div>
+
+            <div class="input-group">
+                <label>ইমেইল</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com">
+            </div>
+
+            <div class="input-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+            </div>
+
+            <button class="btn" onclick="signInWithEmail()">সাইন ইন</button>
+            <button class="btn btn-secondary" onclick="signUpWithEmail()">নতুন একাউন্ট তৈরি করুন</button>
+
+            <p style="text-align: center; font-size: 12px; opacity: 0.6; margin-top: 20px;">
+                একবার লগইন করলে সব ডিভাইসে আপনার ডেটা সিঙ্ক হবে
+            </p>
+        </div>
     </div>
 
-    <div class="install-prompt" id="installPrompt">
-        <div style="font-size: 24px; margin-bottom: 10px;">📱</div>
-        <p><strong>হোম স্ক্রিনে যোগ করুন</strong></p>
-        <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">সহজ অ্যাক্সেসের জন্য এই অ্যাপটি ইনস্টল করুন</p>
-        <button class="btn btn-small" onclick="showInstallInstructions()">কিভাবে করবেন?</button>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading hide">
+        <div class="spinner"></div>
+        <p>লোড হচ্ছে...</p>
     </div>
 
-    <!-- Main Screen -->
-    <div id="mainScreen" class="container">
-        <button class="btn" onclick="showCreateBatch()">+ নতুন ব্যাচ তৈরি করুন</button>
-        <div id="batchList"></div>
-    </div>
-
-    <!-- Batch Details Screen -->
-    <div id="batchDetailsScreen" class="container hide">
-        <div class="summary-card">
-            <h2 id="batchDetailName">ব্যাচের নাম</h2>
-            <div class="summary-grid">
-                <div class="summary-item">
-                    <div class="summary-label">মোট খরচ</div>
-                    <div class="summary-value" id="totalExpense">৳0</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">জীবিত মুরগি</div>
-                    <div class="summary-value" id="aliveChicks">0</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">বিক্রয় পরিমাণ</div>
-                    <div class="summary-value" id="soldAmount">৳0</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-label">লাভ/ক্ষতি</div>
-                    <div class="summary-value" id="profitLoss">৳0</div>
-                </div>
+    <div id="appContent" class="hide">
+        <div class="header">
+            <h1>🐔 পোল্ট্রি ফার্ম ম্যানেজার</h1>
+            <div class="user-info" id="userInfo">
+                <div id="userEmail"></div>
+                <button class="logout-btn" onclick="logout()">লগআউট</button>
             </div>
         </div>
 
-        <div class="card">
-            <h3 style="margin-bottom: 10px;">দ্রুত অ্যাকশন</h3>
-            <div class="action-buttons">
-                <button class="btn" onclick="showAddExpense()">+ খরচ</button>
-                <button class="btn" onclick="showAddDeath()">☠️ মৃত্যু</button>
-                <button class="btn" onclick="showAddSale()">💰 বিক্রয়</button>
-                <button class="btn btn-danger" onclick="confirmDeleteBatch()">🗑️ ডিলিট</button>
+        <!-- Main Screen -->
+        <div id="mainScreen" class="container">
+            <button class="btn" onclick="showCreateBatch()">+ নতুন ব্যাচ তৈরি করুন</button>
+            
+            <div class="card">
+                <h3 style="margin-bottom: 15px;">💾 ডেটা ম্যানেজমেন্ট</h3>
+                <button class="btn" onclick="exportAllData()">📥 সব ডেটা ব্যাকআপ করুন</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 ব্যাকআপ রিস্টোর করুন</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px; text-align: center;">
+                    ☁️ আপনার ডেটা ক্লাউডে সিঙ্ক হচ্ছে
+                </p>
             </div>
+            
+            <div id="batchList"></div>
         </div>
 
-        <div class="card">
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('expenses')">খরচ</button>
-                <button class="tab-btn" onclick="switchTab('deaths')">মৃত্যু</button>
-                <button class="tab-btn" onclick="switchTab('sales')">বিক্রয়</button>
+        <!-- Batch Details Screen -->
+        <div id="batchDetailsScreen" class="container hide">
+            <div class="summary-card">
+                <h2 id="batchDetailName">ব্যাচের নাম</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">মোট খরচ</div>
+                        <div class="summary-value" id="totalExpense">৳0</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">জীবিত মুরগি</div>
+                        <div class="summary-value" id="aliveChicks">0</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">বিক্রয় পরিমাণ</div>
+                        <div class="summary-value" id="soldAmount">৳0</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">লাভ/ক্ষতি</div>
+                        <div class="summary-value" id="profitLoss">৳0</div>
+                    </div>
+                </div>
             </div>
-            <div id="expenseTab">
-                <div id="expenseList"></div>
-            </div>
-            <div id="deathTab" class="hide">
-                <div id="deathList"></div>
-            </div>
-            <div id="saleTab" class="hide">
-                <div id="saleList"></div>
-            </div>
-        </div>
 
-        <button class="btn btn-secondary" onclick="backToMain()">← ফিরে যান</button>
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">দ্রুত অ্যাকশন</h3>
+                <div class="action-buttons">
+                    <button class="btn" onclick="showAddExpense()">+ খরচ</button>
+                    <button class="btn" onclick="showAddDeath()">☠️ মৃত্যু</button>
+                    <button class="btn" onclick="showAddSale()">💰 বিক্রয়</button>
+                    <button class="btn btn-danger" onclick="confirmDeleteBatch()">🗑️ ডিলিট</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 10px;">💾 ডেটা ব্যাকআপ</h3>
+                <button class="btn btn-secondary" onclick="exportData()">📥 ব্যাকআপ ডাউনলোড</button>
+                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">সব ডেটা JSON ফাইলে সেভ হবে</p>
+            </div>
+
+            <div class="card">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('expenses')">খরচ</button>
+                    <button class="tab-btn" onclick="switchTab('deaths')">মৃত্যু</button>
+                    <button class="tab-btn" onclick="switchTab('sales')">বিক্রয়</button>
+                </div>
+                <div id="expenseTab">
+                    <div id="expenseList"></div>
+                </div>
+                <div id="deathTab" class="hide">
+                    <div id="deathList"></div>
+                </div>
+                <div id="saleTab" class="hide">
+                    <div id="saleList"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="backToMain()">← ফিরে যান</button>
+        </div>
+    </div>
+
+    <!-- Sync Status -->
+    <div id="syncStatus" class="sync-status">
+        ☁️ সিঙ্ক হয়েছে
     </div>
 
     <!-- Create Batch Modal -->
@@ -530,63 +715,168 @@
         </div>
     </div>
 
-    <!-- Install Instructions Modal -->
-    <div id="installModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>ইনস্টল করার নির্দেশনা</h2>
-                <span class="close-btn" onclick="closeModal('installModal')">&times;</span>
-            </div>
-            <div style="line-height: 1.8;">
-                <h3 style="color: #4CAF50; margin-bottom: 10px;">Android Chrome:</h3>
-                <p>1. মেনু (⋮) ক্লিক করুন</p>
-                <p>2. "হোম স্ক্রিনে যোগ করুন" সিলেক্ট করুন</p>
-                <p>3. "যোগ করুন" ক্লিক করুন</p>
-                
-                <h3 style="color: #4CAF50; margin: 20px 0 10px;">iPhone Safari:</h3>
-                <p>1. শেয়ার বাটন (📤) ট্যাপ করুন</p>
-                <p>2. "হোম স্ক্রিনে যোগ করুন" সিলেক্ট করুন</p>
-                <p>3. "যোগ করুন" ট্যাপ করুন</p>
-            </div>
-            <button class="btn" onclick="closeModal('installModal')">বুঝেছি</button>
-        </div>
-    </div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey:  "AIzaSyDaWglif2TdV58Qc_84qLeKj4tMVupFlws",
+            authDomain:  "poultry-farm-93721.firebaseapp.com",
+            databaseURL: "https://poultry-farm-93721-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId:  "poultry-farm-93721",
+            storageBucket: "poultry-farm-93721.firebasestorage.app",
+            messagingSenderId: "690531682132",
+            appId: "1:690531682132:web:2a12f43ac746a79b09aac1"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
         let batches = [];
         let currentBatchId = null;
         let currentTab = 'expenses';
+        let currentUser = null;
 
-        // Check if app is installed
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('App is installed');
-        } else {
-            setTimeout(() => {
-                document.getElementById('installPrompt').classList.add('show');
-            }, 3000);
-        }
+        // Auth state observer
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                showApp();
+                document.getElementById('userEmail').textContent = user.email;
+                loadDataFromCloud();
+            } else {
+                showLogin();
+            }
+        });
 
-        function showInstallInstructions() {
-            showModal('installModal');
-        }
-
-        // Load data
-        function loadData() {
-            const saved = localStorage.getItem('poultryData');
-            if (saved) {
-                batches = JSON.parse(saved);
+        // Sign in with Google
+        async function signInWithGoogle() {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.signInWithPopup(provider);
+            } catch (error) {
+                alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
             }
         }
 
-        // Save data
-        function saveData() {
-            localStorage.setItem('poultryData', JSON.stringify(batches));
+        // Sign in with email
+        async function signInWithEmail() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('⚠️ ইমেইল এবং পাসওয়ার্ড দিন');
+                return;
+            }
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
+            }
+        }
+
+        // Sign up with email
+        async function signUpWithEmail() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('⚠️ ইমেইল এবং পাসওয়ার্ড দিন');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('⚠️ পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে');
+                return;
+            }
+
+            try {
+                await auth.createUserWithEmailAndPassword(email, password);
+                alert('✅ একাউন্ট তৈরি সফল হয়েছে!');
+            } catch (error) {
+                alert('❌ একাউন্ট তৈরি ব্যর্থ: ' + error.message);
+            }
+        }
+
+        // Logout
+        async function logout() {
+            if (confirm('লগআউট করতে চান?')) {
+                await auth.signOut();
+                batches = [];
+            }
+        }
+
+        // Show/hide screens
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hide');
+            document.getElementById('loadingScreen').classList.add('hide');
+            document.getElementById('appContent').classList.add('hide');
+        }
+
+        function showLoading() {
+            document.getElementById('loginScreen').classList.add('hide');
+            document.getElementById('loadingScreen').classList.remove('hide');
+            document.getElementById('appContent').classList.add('hide');
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hide');
+            document.getElementById('loadingScreen').classList.add('hide');
+            document.getElementById('appContent').classList.remove('hide');
+        }
+
+        // Load data from cloud
+        function loadDataFromCloud() {
+            if (!currentUser) return;
+            
+            showLoading();
+            const userRef = database.ref('users/' + currentUser.uid + '/batches');
+            
+            userRef.once('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    batches = snapshot.val() || [];
+                } else {
+                    // Try to migrate local data
+                    const localData = localStorage.getItem('poultryData');
+                    if (localData) {
+                        batches = JSON.parse(localData);
+                        saveDataToCloud();
+                    }
+                }
+                renderBatchList();
+                showApp();
+            });
+        }
+
+        // Save data to cloud
+        function saveDataToCloud() {
+            if (!currentUser) return;
+            
+            const userRef = database.ref('users/' + currentUser.uid + '/batches');
+            userRef.set(batches).then(() => {
+                showSyncStatus();
+            }).catch(error => {
+                console.error('Sync error:', error);
+            });
+        }
+
+        // Show sync status
+        function showSyncStatus() {
+            const status = document.getElementById('syncStatus');
+            status.classList.add('show');
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 2000);
         }
 
         // Initialize
         function init() {
-            loadData();
-            renderBatchList();
             setTodayDates();
         }
 
@@ -682,7 +972,7 @@
             };
 
             batches.push(batch);
-            saveData();
+            saveDataToCloud();
             renderBatchList();
             closeModal('createBatchModal');
             
@@ -832,7 +1122,7 @@
             
             const batch = batches.find(b => b.id === currentBatchId);
             batch.expenses = batch.expenses.filter(e => e.id !== expenseId);
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
         }
@@ -845,7 +1135,7 @@
             const death = batch.deaths.find(d => d.id === deathId);
             batch.aliveChicks += death.count;
             batch.deaths = batch.deaths.filter(d => d.id !== deathId);
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
         }
@@ -858,7 +1148,7 @@
             const sale = batch.sales.find(s => s.id === saleId);
             batch.aliveChicks += sale.chicks;
             batch.sales = batch.sales.filter(s => s.id !== saleId);
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
         }
@@ -867,7 +1157,7 @@
             if (!confirm('⚠️ এই ব্যাচ সম্পূর্ণভাবে মুছে ফেলতে চান? সব ডেটা হারিয়ে যাবে!')) return;
             
             batches = batches.filter(b => b.id !== currentBatchId);
-            saveData();
+            saveDataToCloud();
             backToMain();
             renderBatchList();
         }
@@ -904,7 +1194,7 @@
                 note 
             });
 
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
             closeModal('addExpenseModal');
@@ -943,7 +1233,7 @@
             });
             batch.aliveChicks -= count;
 
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
             closeModal('addDeathModal');
@@ -995,7 +1285,7 @@
             });
             batch.aliveChicks -= chicks;
 
-            saveData();
+            saveDataToCloud();
             viewBatch(currentBatchId);
             renderBatchList();
             closeModal('addSaleModal');
@@ -1005,6 +1295,71 @@
             document.getElementById('pricePerKg').value = '';
             document.getElementById('saleAmount').value = '';
             document.getElementById('buyerName').value = '';
+        }
+
+        // Export/Import functions
+        function exportAllData() {
+            if (batches.length === 0) {
+                alert('⚠️ কোনো ডেটা নেই ব্যাকআপ করার জন্য!');
+                return;
+            }
+
+            const dataStr = JSON.stringify(batches, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `poultry_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ ব্যাকআপ ডাউনলোড সফল হয়েছে!');
+        }
+
+        function exportData() {
+            if (!currentBatchId) return;
+            
+            const batch = batches.find(b => b.id === currentBatchId);
+            const dataStr = JSON.stringify(batch, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${batch.name}_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ ব্যাকআপ ডাউনলোড সফল হয়েছে!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    if (Array.isArray(importedData)) {
+                        if (batches.length > 0) {
+                            if (!confirm('⚠️ বর্তমান ডেটা মুছে নতুন ডেটা লোড করবেন?\n\n"OK" = পুরাতন ডেটা মুছে যাবে\n"Cancel" = বাতিল')) {
+                                return;
+                            }
+                        }
+                        batches = importedData;
+                    } else {
+                        batches.push(importedData);
+                    }
+                    
+                    saveDataToCloud();
+                    renderBatchList();
+                    alert('✅ ডেটা সফলভাবে রিস্টোর হয়েছে!');
+                } catch (error) {
+                    alert('❌ ফাইল পড়তে সমস্যা হয়েছে! সঠিক ব্যাকআপ ফাইল নির্বাচন করুন।');
+                }
+            };
+            reader.readAsText(file);
+            
+            event.target.value = '';
         }
 
         // Close modal on outside click
