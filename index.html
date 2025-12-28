@@ -723,14 +723,15 @@
     <script>
         // Firebase Configuration
         const firebaseConfig = {
-            apiKey:  "AIzaSyDaWglif2TdV58Qc_84qLeKj4tMVupFlws",
-            authDomain:  "poultry-farm-93721.firebaseapp.com",
+            apiKey: "AIzaSyDaWglif2TdV58Qc_84qLeKj4tMVupFlws",
+            authDomain: "poultry-farm-93721.firebaseapp.com",
             databaseURL: "https://poultry-farm-93721-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId:  "poultry-farm-93721",
+            projectId: "poultry-farm-93721",
             storageBucket: "poultry-farm-93721.firebasestorage.app",
             messagingSenderId: "690531682132",
             appId: "1:690531682132:web:2a12f43ac746a79b09aac1"
-        };
+            };
+        
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -743,13 +744,21 @@
         let currentUser = null;
 
         // Auth state observer
+        let isInitialLoad = true;
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                showApp();
                 document.getElementById('userEmail').textContent = user.email;
-                loadDataFromCloud();
+                
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    loadDataFromCloud();
+                } else {
+                    showApp();
+                }
             } else {
+                currentUser = null;
+                isInitialLoad = true;
                 showLogin();
             }
         });
@@ -758,9 +767,13 @@
         async function signInWithGoogle() {
             try {
                 const provider = new firebase.auth.GoogleAuthProvider();
-                await auth.signInWithPopup(provider);
+                const result = await auth.signInWithPopup(provider);
+                // Login successful - onAuthStateChanged will handle the rest
             } catch (error) {
-                alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
+                if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+                    alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
+                }
+                showLogin();
             }
         }
 
@@ -775,8 +788,11 @@
             }
 
             try {
+                showLoading();
                 await auth.signInWithEmailAndPassword(email, password);
+                // Login successful - onAuthStateChanged will handle the rest
             } catch (error) {
+                showLogin();
                 alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
             }
         }
@@ -797,9 +813,12 @@
             }
 
             try {
+                showLoading();
                 await auth.createUserWithEmailAndPassword(email, password);
                 alert('✅ একাউন্ট তৈরি সফল হয়েছে!');
+                // Login successful - onAuthStateChanged will handle the rest
             } catch (error) {
+                showLogin();
                 alert('❌ একাউন্ট তৈরি ব্যর্থ: ' + error.message);
             }
         }
@@ -807,8 +826,14 @@
         // Logout
         async function logout() {
             if (confirm('লগআউট করতে চান?')) {
-                await auth.signOut();
-                batches = [];
+                try {
+                    await auth.signOut();
+                    batches = [];
+                    currentBatchId = null;
+                    // onAuthStateChanged will handle showing login screen
+                } catch (error) {
+                    alert('লগআউট করতে সমস্যা হয়েছে');
+                }
             }
         }
 
@@ -841,14 +866,28 @@
             userRef.once('value', (snapshot) => {
                 if (snapshot.exists()) {
                     batches = snapshot.val() || [];
+                    if (!Array.isArray(batches)) {
+                        batches = [];
+                    }
                 } else {
                     // Try to migrate local data
                     const localData = localStorage.getItem('poultryData');
                     if (localData) {
-                        batches = JSON.parse(localData);
-                        saveDataToCloud();
+                        try {
+                            batches = JSON.parse(localData);
+                            if (Array.isArray(batches) && batches.length > 0) {
+                                saveDataToCloud();
+                            }
+                        } catch (e) {
+                            batches = [];
+                        }
                     }
                 }
+                renderBatchList();
+                showApp();
+            }).catch(error => {
+                console.error('Load error:', error);
+                batches = [];
                 renderBatchList();
                 showApp();
             });
@@ -856,13 +895,19 @@
 
         // Save data to cloud
         function saveDataToCloud() {
-            if (!currentUser) return;
+            if (!currentUser) {
+                console.log('No user logged in');
+                return;
+            }
             
             const userRef = database.ref('users/' + currentUser.uid + '/batches');
             userRef.set(batches).then(() => {
                 showSyncStatus();
+                // Also save to localStorage as backup
+                localStorage.setItem('poultryData', JSON.stringify(batches));
             }).catch(error => {
                 console.error('Sync error:', error);
+                alert('⚠️ ডেটা সিঙ্ক করতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ চেক করুন।');
             });
         }
 
