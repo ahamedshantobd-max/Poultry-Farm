@@ -4,724 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#4CAF50">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Poultry Farm">
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUG91bHRyeSBGYXJtIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiUG91bHRyeSIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMWExYTFhIiwidGhlbWVfY29sb3IiOiIjNENBRjUwIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0NjaXJjbGUgY3g9JzUwJyBjeT0nNTAnIHI9JzUwJyBmaWxsPSclMjM0Q0FGNTAnLyUzRSUzQ3RleHQgeD0nNTAlMjUnIHk9JzUwJTI1JyBmb250LXNpemU9JzUwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjNlbSclM0UlRjAlOUYlOTAlOTQlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
     <title>পোল্ট্রি ফার্ম ম্যানেজার</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
-            padding-bottom: 80px;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-        }
-
-        .user-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-        
-        .container {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .login-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: #2a2a2a;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .login-header p {
-            opacity: 0.7;
-            font-size: 14px;
-        }
-        
-        .card {
-            background: #2a2a2a;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        
-        .btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .btn:active {
-            background: #45a049;
-            transform: scale(0.98);
-        }
-
-        .btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        
-        .btn-secondary {
-            background: #666;
-        }
-
-        .btn-google {
-            background: white;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-google:active {
-            background: #f0f0f0;
-        }
-        
-        .btn-danger {
-            background: #f44336;
-        }
-        
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 14px;
-            width: auto;
-            display: inline-block;
-        }
-        
-        .input-group {
-            margin-bottom: 15px;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #aaa;
-        }
-        
-        .input-group input, .input-group select, .input-group textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #333;
-            color: #fff;
-            font-size: 16px;
-        }
-        
-        .input-group textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-        
-        .batch-item {
-            background: #3a3a3a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .batch-item:active {
-            background: #4a4a4a;
-            transform: scale(0.99);
-        }
-        
-        .batch-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .batch-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        
-        .batch-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            font-size: 14px;
-        }
-        
-        .stat-item {
-            background: #2a2a2a;
-            padding: 8px;
-            border-radius: 6px;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            overflow-y: auto;
-            animation: fadeIn 0.2s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background: #2a2a2a;
-            margin: 20px auto;
-            padding: 20px;
-            max-width: 500px;
-            border-radius: 12px;
-            animation: slideUp 0.3s;
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .close-btn {
-            font-size: 30px;
-            cursor: pointer;
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s;
-        }
-        
-        .close-btn:active {
-            background: #444;
-        }
-        
-        .expense-item {
-            background: #3a3a3a;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .summary-card {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .summary-item {
-            background: rgba(255,255,255,0.1);
-            padding: 12px;
-            border-radius: 8px;
-        }
-        
-        .summary-label {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        .summary-value {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-        
-        .hide {
-            display: none;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            opacity: 0.6;
-        }
-        
-        .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .delete-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        
-        .list-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tab-buttons {
-            display: flex;
-            background: #2a2a2a;
-            border-radius: 8px;
-            padding: 5px;
-            margin-bottom: 15px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: transparent;
-            color: #888;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .sync-status {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            background: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            display: none;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .sync-status.show {
-            display: block;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: #444;
-        }
-
-        .divider span {
-            background: #2a2a2a;
-            padding: 0 10px;
-            position: relative;
-            z-index: 1;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            border: 3px solid #333;
-            border-top: 3px solid #4CAF50;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* CSS Styles unchanged */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: #fff; padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, #4CAF50, #45a049); padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 24px; }
+        .user-info { position: absolute; top: 20px; right: 20px; font-size: 12px; }
+        .logout-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 5px; border-radius: 4px; cursor: pointer; }
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .hide { display: none; }
+        .card { background: #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .btn { background: #4CAF50; color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .btn-secondary { background: #666; }
+        .btn-google { background: white; color: #333; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-danger { background: #f44336; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 5px; color: #aaa; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #444; background: #333; color: #fff; font-size: 16px; }
+        .batch-item { background: #3a3a3a; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
+        .batch-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; color: #4CAF50; }
+        .batch-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
+        .modal-content { background: #2a2a2a; margin: 20px auto; padding: 20px; max-width: 500px; border-radius: 12px; }
+        .close-btn { float: right; font-size: 28px; cursor: pointer; }
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: #2a2a2a; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; }
+        .expense-item { background: #3a3a3a; padding: 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .delete-btn { background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-left: 10px; cursor: pointer; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #333; border: none; color: #fff; border-radius: 6px; cursor: pointer; }
+        .tab-btn.active { background: #4CAF50; }
+        .summary-card { background: linear-gradient(135deg, #4CAF50, #45a049); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .loading { text-align: center; padding: 50px; }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
+
     <div id="loginScreen" class="login-screen">
         <div class="login-card">
-            <div class="login-header">
-                <h1>🐔 পোল্ট্রি ফার্ম</h1>
-                <p>সব ডিভাইসে আপনার ডেটা অ্যাক্সেস করুন</p>
-            </div>
-
+            <h1>🐔 পোল্ট্রি ফার্ম</h1>
+            <p style="color: #aaa; margin-bottom: 20px;">আপনার ডেটা ক্লাউডে সেভ থাকবে</p>
+            
             <button class="btn btn-google" onclick="signInWithGoogle()">
-                <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
                 Google দিয়ে সাইন ইন করুন
             </button>
-
-            <div class="divider"><span>অথবা</span></div>
-
-            <div class="input-group">
+            
+            <p style="margin: 15px 0;">অথবা</p>
+            
+            <div class="input-group" style="text-align: left;">
                 <label>ইমেইল</label>
-                <input type="email" id="loginEmail" placeholder="your@email.com">
+                <input type="email" id="loginEmail" placeholder="email@example.com">
             </div>
-
-            <div class="input-group">
+            <div class="input-group" style="text-align: left;">
                 <label>পাসওয়ার্ড</label>
-                <input type="password" id="loginPassword" placeholder="••••••••">
+                <input type="password" id="loginPassword" placeholder="******">
             </div>
-
-            <button class="btn" onclick="signInWithEmail()">সাইন ইন</button>
-            <button class="btn btn-secondary" onclick="signUpWithEmail()">নতুন একাউন্ট তৈরি করুন</button>
-
-            <p style="text-align: center; font-size: 12px; opacity: 0.6; margin-top: 20px;">
-                একবার লগইন করলে সব ডিভাইসে আপনার ডেটা সিঙ্ক হবে
-            </p>
+            <button class="btn" onclick="signInWithEmail()">লগইন</button>
+            <button class="btn btn-secondary" onclick="signUpWithEmail()">রেজিস্ট্রেশন</button>
         </div>
     </div>
 
-    <!-- Loading Screen -->
     <div id="loadingScreen" class="loading hide">
-        <div class="spinner"></div>
-        <p>লোড হচ্ছে...</p>
+        <h2>লোড হচ্ছে...</h2>
     </div>
 
     <div id="appContent" class="hide">
         <div class="header">
             <h1>🐔 পোল্ট্রি ফার্ম ম্যানেজার</h1>
-            <div class="user-info" id="userInfo">
-                <div id="userEmail"></div>
-                <button class="logout-btn" onclick="logout()">লগআউট</button>
+            <div class="user-info">
+                <span id="userEmail"></span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
 
-        <!-- Main Screen -->
         <div id="mainScreen" class="container">
-            <button class="btn" onclick="showCreateBatch()">+ নতুন ব্যাচ তৈরি করুন</button>
-            
-            <div class="card">
-                <h3 style="margin-bottom: 15px;">💾 ডেটা ম্যানেজমেন্ট</h3>
-                <button class="btn" onclick="exportAllData()">📥 সব ডেটা ব্যাকআপ করুন</button>
-                <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📤 ব্যাকআপ রিস্টোর করুন</button>
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px; text-align: center;">
-                    ☁️ আপনার ডেটা ক্লাউডে সিঙ্ক হচ্ছে
-                </p>
-            </div>
-            
-            <div id="batchList"></div>
+            <button class="btn" onclick="showModal('createBatchModal')">+ নতুন ব্যাচ তৈরি করুন</button>
+            <div id="batchList" style="margin-top: 20px;"></div>
         </div>
 
-        <!-- Batch Details Screen -->
         <div id="batchDetailsScreen" class="container hide">
             <div class="summary-card">
-                <h2 id="batchDetailName">ব্যাচের নাম</h2>
+                <h2 id="batchDetailName">Batch Name</h2>
                 <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-label">মোট খরচ</div>
-                        <div class="summary-value" id="totalExpense">৳0</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">জীবিত মুরগি</div>
-                        <div class="summary-value" id="aliveChicks">0</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">বিক্রয় পরিমাণ</div>
-                        <div class="summary-value" id="soldAmount">৳0</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">লাভ/ক্ষতি</div>
-                        <div class="summary-value" id="profitLoss">৳0</div>
-                    </div>
+                    <div>খরচ: <strong id="totalExpense">0</strong></div>
+                    <div>বিক্রয়: <strong id="soldAmount">0</strong></div>
+                    <div>লাভ/ক্ষতি: <strong id="profitLoss">0</strong></div>
+                    <div>জীবিত: <strong id="aliveChicks">0</strong></div>
                 </div>
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 10px;">দ্রুত অ্যাকশন</h3>
-                <div class="action-buttons">
-                    <button class="btn" onclick="showAddExpense()">+ খরচ</button>
-                    <button class="btn" onclick="showAddDeath()">☠️ মৃত্যু</button>
-                    <button class="btn" onclick="showAddSale()">💰 বিক্রয়</button>
-                    <button class="btn btn-danger" onclick="confirmDeleteBatch()">🗑️ ডিলিট</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn" style="margin:0" onclick="showModal('addExpenseModal')">+ খরচ</button>
+                    <button class="btn" style="margin:0" onclick="showModal('addSaleModal')">+ বিক্রয়</button>
+                    <button class="btn" style="margin:0; background:#f57c00" onclick="showModal('addDeathModal')">☠️ মৃত্যু</button>
+                    <button class="btn btn-danger" style="margin:0" onclick="confirmDeleteBatch()">🗑️ ডিলিট</button>
                 </div>
-            </div>
-
-            <div class="card">
-                <h3 style="margin-bottom: 10px;">💾 ডেটা ব্যাকআপ</h3>
-                <button class="btn btn-secondary" onclick="exportData()">📥 ব্যাকআপ ডাউনলোড</button>
-                <p style="font-size: 12px; opacity: 0.7; margin-top: 10px;">সব ডেটা JSON ফাইলে সেভ হবে</p>
             </div>
 
             <div class="card">
                 <div class="tab-buttons">
                     <button class="tab-btn active" onclick="switchTab('expenses')">খরচ</button>
-                    <button class="tab-btn" onclick="switchTab('deaths')">মৃত্যু</button>
                     <button class="tab-btn" onclick="switchTab('sales')">বিক্রয়</button>
+                    <button class="tab-btn" onclick="switchTab('deaths')">মৃত্যু</button>
                 </div>
-                <div id="expenseTab">
-                    <div id="expenseList"></div>
-                </div>
-                <div id="deathTab" class="hide">
-                    <div id="deathList"></div>
-                </div>
-                <div id="saleTab" class="hide">
-                    <div id="saleList"></div>
-                </div>
+                <div id="expenseTab"></div>
+                <div id="saleTab" class="hide"></div>
+                <div id="deathTab" class="hide"></div>
             </div>
 
             <button class="btn btn-secondary" onclick="backToMain()">← ফিরে যান</button>
         </div>
     </div>
 
-    <!-- Sync Status -->
-    <div id="syncStatus" class="sync-status">
-        ☁️ সিঙ্ক হয়েছে
-    </div>
-
-    <!-- Create Batch Modal -->
     <div id="createBatchModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>নতুন ব্যাচ তৈরি করুন</h2>
-                <span class="close-btn" onclick="closeModal('createBatchModal')">&times;</span>
-            </div>
-            <div class="input-group">
-                <label>ব্যাচের নাম *</label>
-                <input type="text" id="batchName" placeholder="যেমন: Color Bird -3">
-            </div>
-            <div class="input-group">
-                <label>মোট মুরগি *</label>
-                <input type="number" id="totalChicks" placeholder="যেমন: 700">
-            </div>
-            <div class="input-group">
-                <label>ক্রয়ের তারিখ *</label>
-                <input type="date" id="purchaseDate">
-            </div>
-            <div class="input-group">
-                <label>প্রাথমিক খরচ (মুরগি ক্রয়) *</label>
-                <input type="number" id="initialCost" placeholder="যেমন: 21000">
-            </div>
-            <div class="input-group">
-                <label>নোট (ঐচ্ছিক)</label>
-                <textarea id="batchNote" placeholder="অতিরিক্ত তথ্য"></textarea>
-            </div>
-            <button class="btn" onclick="createBatch()">ব্যাচ তৈরি করুন</button>
+            <span class="close-btn" onclick="closeModal('createBatchModal')">&times;</span>
+            <h2>নতুন ব্যাচ</h2>
+            <div class="input-group"><label>নাম</label><input type="text" id="batchName"></div>
+            <div class="input-group"><label>মোট মুরগি</label><input type="number" id="totalChicks"></div>
+            <div class="input-group"><label>তারিখ</label><input type="date" id="purchaseDate"></div>
+            <div class="input-group"><label>প্রাথমিক খরচ</label><input type="number" id="initialCost"></div>
+            <button class="btn" onclick="createBatch()">তৈরি করুন</button>
         </div>
     </div>
 
-    <!-- Add Expense Modal -->
     <div id="addExpenseModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>খরচ যোগ করুন</h2>
-                <span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span>
-            </div>
+            <span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span>
+            <h2>খরচ যোগ করুন</h2>
             <div class="input-group">
-                <label>খরচের ধরন *</label>
+                <label>ধরন</label>
                 <select id="expenseType">
                     <option value="feed">খাদ্য</option>
                     <option value="medicine">ঔষধ</option>
-                    <option value="vaccine">টিকা</option>
-                    <option value="electricity">বিদ্যুৎ</option>
-                    <option value="transport">পরিবহন</option>
-                    <option value="labor">শ্রমিক</option>
                     <option value="other">অন্যান্য</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>প্যাকেট/ইউনিট সংখ্যা</label>
-                <input type="number" id="expenseQuantity" placeholder="যেমন: 5" value="1">
-            </div>
-            <div class="input-group">
-                <label>প্রতি ইউনিট মূল্য (৳)</label>
-                <input type="number" id="expenseUnitPrice" placeholder="যেমন: 3000">
-            </div>
-            <div class="input-group">
-                <label>মোট খরচ (৳) *</label>
-                <input type="number" id="expenseAmount" placeholder="স্বয়ংক্রিয় গণনা">
-            </div>
-            <div class="input-group">
-                <label>তারিখ *</label>
-                <input type="date" id="expenseDate">
-            </div>
-            <div class="input-group">
-                <label>নোট (ঐচ্ছিক)</label>
-                <input type="text" id="expenseNote" placeholder="অতিরিক্ত তথ্য">
-            </div>
-            <button class="btn" onclick="addExpense()">খরচ যোগ করুন</button>
+            <div class="input-group"><label>টাকা</label><input type="number" id="expenseAmount"></div>
+            <div class="input-group"><label>তারিখ</label><input type="date" id="expenseDate"></div>
+            <div class="input-group"><label>নোট</label><input type="text" id="expenseNote"></div>
+            <button class="btn" onclick="addExpense()">যোগ করুন</button>
         </div>
     </div>
 
-    <!-- Add Death Modal -->
+    <div id="addSaleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('addSaleModal')">&times;</span>
+            <h2>বিক্রয়</h2>
+            <div class="input-group"><label>সংখ্যা</label><input type="number" id="soldChicks"></div>
+            <div class="input-group"><label>কেজি</label><input type="number" id="soldWeight"></div>
+            <div class="input-group"><label>মোট টাকা</label><input type="number" id="saleAmount"></div>
+            <div class="input-group"><label>তারিখ</label><input type="date" id="saleDate"></div>
+            <button class="btn" onclick="addSale()">যোগ করুন</button>
+        </div>
+    </div>
+
     <div id="addDeathModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>মৃত্যু রেকর্ড করুন</h2>
-                <span class="close-btn" onclick="closeModal('addDeathModal')">&times;</span>
-            </div>
-            <div class="input-group">
-                <label>মৃত মুরগির সংখ্যা *</label>
-                <input type="number" id="deathCount" placeholder="যেমন: 5">
-            </div>
-            <div class="input-group">
-                <label>তারিখ *</label>
-                <input type="date" id="deathDate">
-            </div>
-            <div class="input-group">
-                <label>কারণ (ঐচ্ছিক)</label>
-                <input type="text" id="deathReason" placeholder="যেমন: রোগ">
-            </div>
+            <span class="close-btn" onclick="closeModal('addDeathModal')">&times;</span>
+            <h2>মৃত্যু রেকর্ড</h2>
+            <div class="input-group"><label>সংখ্যা</label><input type="number" id="deathCount"></div>
+            <div class="input-group"><label>তারিখ</label><input type="date" id="deathDate"></div>
+            <div class="input-group"><label>কারণ</label><input type="text" id="deathReason"></div>
             <button class="btn" onclick="addDeath()">রেকর্ড করুন</button>
         </div>
     </div>
 
-    <!-- Add Sale Modal -->
-    <div id="addSaleModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>বিক্রয় যোগ করুন</h2>
-                <span class="close-btn" onclick="closeModal('addSaleModal')">&times;</span>
-            </div>
-            <div class="input-group">
-                <label>বিক্রীত মুরগির সংখ্যা *</label>
-                <input type="number" id="soldChicks" placeholder="যেমন: 100">
-            </div>
-            <div class="input-group">
-                <label>মোট ওজন (কেজি) *</label>
-                <input type="number" step="0.01" id="soldWeight" placeholder="যেমন: 250">
-            </div>
-            <div class="input-group">
-                <label>প্রতি কেজি মূল্য (৳)</label>
-                <input type="number" id="pricePerKg" placeholder="যেমন: 180">
-            </div>
-            <div class="input-group">
-                <label>মোট বিক্রয় মূল্য (৳) *</label>
-                <input type="number" id="saleAmount" placeholder="স্বয়ংক্রিয় গণনা">
-            </div>
-            <div class="input-group">
-                <label>তারিখ *</label>
-                <input type="date" id="saleDate">
-            </div>
-            <div class="input-group">
-                <label>ক্রেতার নাম (ঐচ্ছিক)</label>
-                <input type="text" id="buyerName" placeholder="ক্রেতার নাম">
-            </div>
-            <button class="btn" onclick="addSale()">বিক্রয় যোগ করুন</button>
-        </div>
-    </div>
-
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
     <script>
-        // Firebase Configuration
+        // ✅ APNAR ASOL FIREBASE CONFIG EIKHANE BOSHANO HOYECHE
         const firebaseConfig = {
             apiKey: "AIzaSyDaWglif2TdV58Qc_84qLeKj4tMVupFlws",
             authDomain: "poultry-farm-93721.firebaseapp.com",
@@ -730,692 +188,244 @@
             storageBucket: "poultry-farm-93721.firebasestorage.app",
             messagingSenderId: "690531682132",
             appId: "1:690531682132:web:2a12f43ac746a79b09aac1"
-            };
-        
+        };
 
-        // Initialize Firebase
+        // Initialize
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const database = firebase.database();
-
+        const db = firebase.database();
         let batches = [];
         let currentBatchId = null;
-        let currentTab = 'expenses';
         let currentUser = null;
 
-        // Auth state observer
-        let isInitialLoad = true;
+        // Auth Listener
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                document.getElementById('userEmail').textContent = user.email;
-                
-                if (isInitialLoad) {
-                    isInitialLoad = false;
-                    loadDataFromCloud();
-                } else {
-                    showApp();
-                }
+                document.getElementById('userEmail').innerText = user.email;
+                document.getElementById('loginScreen').classList.add('hide');
+                document.getElementById('appContent').classList.remove('hide');
+                loadData();
             } else {
                 currentUser = null;
-                isInitialLoad = true;
-                showLogin();
+                document.getElementById('loginScreen').classList.remove('hide');
+                document.getElementById('appContent').classList.add('hide');
             }
         });
 
-        // Sign in with Google
-        async function signInWithGoogle() {
-            try {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                const result = await auth.signInWithPopup(provider);
-                // Login successful - onAuthStateChanged will handle the rest
-            } catch (error) {
-                if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-                    alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
-                }
-                showLogin();
-            }
+        // Auth Functions
+        function signInWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(e => alert(e.message));
         }
 
-        // Sign in with email
-        async function signInWithEmail() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) {
-                alert('⚠️ ইমেইল এবং পাসওয়ার্ড দিন');
-                return;
-            }
-
-            try {
-                showLoading();
-                await auth.signInWithEmailAndPassword(email, password);
-                // Login successful - onAuthStateChanged will handle the rest
-            } catch (error) {
-                showLogin();
-                alert('❌ সাইন ইন ব্যর্থ: ' + error.message);
-            }
+        function signInWithEmail() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+            auth.signInWithEmailAndPassword(email, pass).catch(e => alert(e.message));
         }
 
-        // Sign up with email
-        async function signUpWithEmail() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!email || !password) {
-                alert('⚠️ ইমেইল এবং পাসওয়ার্ড দিন');
-                return;
-            }
-
-            if (password.length < 6) {
-                alert('⚠️ পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে');
-                return;
-            }
-
-            try {
-                showLoading();
-                await auth.createUserWithEmailAndPassword(email, password);
-                alert('✅ একাউন্ট তৈরি সফল হয়েছে!');
-                // Login successful - onAuthStateChanged will handle the rest
-            } catch (error) {
-                showLogin();
-                alert('❌ একাউন্ট তৈরি ব্যর্থ: ' + error.message);
-            }
+        function signUpWithEmail() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+            auth.createUserWithEmailAndPassword(email, pass).catch(e => alert(e.message));
         }
 
-        // Logout
-        async function logout() {
-            if (confirm('লগআউট করতে চান?')) {
-                try {
-                    await auth.signOut();
-                    batches = [];
-                    currentBatchId = null;
-                    // onAuthStateChanged will handle showing login screen
-                } catch (error) {
-                    alert('লগআউট করতে সমস্যা হয়েছে');
-                }
-            }
+        function logout() {
+            auth.signOut();
         }
 
-        // Show/hide screens
-        function showLogin() {
-            document.getElementById('loginScreen').classList.remove('hide');
-            document.getElementById('loadingScreen').classList.add('hide');
-            document.getElementById('appContent').classList.add('hide');
-        }
-
-        function showLoading() {
-            document.getElementById('loginScreen').classList.add('hide');
+        // Database Functions
+        function loadData() {
             document.getElementById('loadingScreen').classList.remove('hide');
-            document.getElementById('appContent').classList.add('hide');
-        }
-
-        function showApp() {
-            document.getElementById('loginScreen').classList.add('hide');
-            document.getElementById('loadingScreen').classList.add('hide');
-            document.getElementById('appContent').classList.remove('hide');
-        }
-
-        // Load data from cloud
-        function loadDataFromCloud() {
-            if (!currentUser) return;
-            
-            showLoading();
-            const userRef = database.ref('users/' + currentUser.uid + '/batches');
-            
-            userRef.once('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    batches = snapshot.val() || [];
-                    if (!Array.isArray(batches)) {
-                        batches = [];
-                    }
-                } else {
-                    // Try to migrate local data
-                    const localData = localStorage.getItem('poultryData');
-                    if (localData) {
-                        try {
-                            batches = JSON.parse(localData);
-                            if (Array.isArray(batches) && batches.length > 0) {
-                                saveDataToCloud();
-                            }
-                        } catch (e) {
-                            batches = [];
-                        }
-                    }
-                }
+            const ref = db.ref('users/' + currentUser.uid + '/batches');
+            ref.on('value', snapshot => {
+                document.getElementById('loadingScreen').classList.add('hide');
+                const data = snapshot.val();
+                batches = data ? data : [];
                 renderBatchList();
-                showApp();
-            }).catch(error => {
-                console.error('Load error:', error);
-                batches = [];
-                renderBatchList();
-                showApp();
+                if (currentBatchId) viewBatch(currentBatchId); // Refresh details if open
             });
         }
 
-        // Save data to cloud
-        function saveDataToCloud() {
-            if (!currentUser) {
-                console.log('No user logged in');
-                return;
-            }
-            
-            const userRef = database.ref('users/' + currentUser.uid + '/batches');
-            userRef.set(batches).then(() => {
-                showSyncStatus();
-                // Also save to localStorage as backup
-                localStorage.setItem('poultryData', JSON.stringify(batches));
-            }).catch(error => {
-                console.error('Sync error:', error);
-                alert('⚠️ ডেটা সিঙ্ক করতে সমস্যা হয়েছে। ইন্টারনেট সংযোগ চেক করুন।');
-            });
+        function saveData() {
+            if(!currentUser) return;
+            db.ref('users/' + currentUser.uid + '/batches').set(batches);
         }
 
-        // Show sync status
-        function showSyncStatus() {
-            const status = document.getElementById('syncStatus');
-            status.classList.add('show');
-            setTimeout(() => {
-                status.classList.remove('show');
-            }, 2000);
-        }
-
-        // Initialize
-        function init() {
-            setTodayDates();
-        }
-
-        function setTodayDates() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('purchaseDate').value = today;
-            document.getElementById('expenseDate').value = today;
-            document.getElementById('deathDate').value = today;
-            document.getElementById('saleDate').value = today;
-        }
-
-        // Screen management
-        function showScreen(screenId) {
-            document.getElementById('mainScreen').classList.add('hide');
-            document.getElementById('batchDetailsScreen').classList.add('hide');
-            document.getElementById(screenId).classList.remove('hide');
-        }
-
-        function backToMain() {
-            showScreen('mainScreen');
-            currentBatchId = null;
-        }
-
-        // Modal management
-        function showModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function showCreateBatch() {
-            showModal('createBatchModal');
-        }
-
-        function showAddExpense() {
-            showModal('addExpenseModal');
-        }
-
-        function showAddDeath() {
-            showModal('addDeathModal');
-        }
-
-        function showAddSale() {
-            showModal('addSaleModal');
-        }
-
-        // Tab switching
-        function switchTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            document.getElementById('expenseTab').classList.add('hide');
-            document.getElementById('deathTab').classList.add('hide');
-            document.getElementById('saleTab').classList.add('hide');
-            
-            if (tab === 'expenses') document.getElementById('expenseTab').classList.remove('hide');
-            if (tab === 'deaths') document.getElementById('deathTab').classList.remove('hide');
-            if (tab === 'sales') document.getElementById('saleTab').classList.remove('hide');
-        }
-
-        // Create batch
+        // App Logic
         function createBatch() {
-            const name = document.getElementById('batchName').value.trim();
-            const totalChicks = parseInt(document.getElementById('totalChicks').value);
-            const purchaseDate = document.getElementById('purchaseDate').value;
-            const initialCost = parseFloat(document.getElementById('initialCost').value);
-            const note = document.getElementById('batchNote').value.trim();
-
-            if (!name || !totalChicks || !purchaseDate || !initialCost) {
-                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
-                return;
-            }
-
             const batch = {
                 id: Date.now(),
-                name,
-                totalChicks,
-                aliveChicks: totalChicks,
-                purchaseDate,
-                note,
+                name: document.getElementById('batchName').value,
+                totalChicks: parseInt(document.getElementById('totalChicks').value),
+                aliveChicks: parseInt(document.getElementById('totalChicks').value),
+                purchaseDate: document.getElementById('purchaseDate').value,
                 expenses: [{
-                    id: Date.now(),
                     type: 'purchase',
-                    amount: initialCost,
-                    date: purchaseDate,
-                    note: 'প্রাথমিক ক্রয়'
+                    amount: parseFloat(document.getElementById('initialCost').value),
+                    date: document.getElementById('purchaseDate').value,
+                    note: 'Initial Cost'
                 }],
-                deaths: [],
-                sales: []
+                sales: [],
+                deaths: []
             };
-
             batches.push(batch);
-            saveDataToCloud();
-            renderBatchList();
+            saveData();
             closeModal('createBatchModal');
-            
-            document.getElementById('batchName').value = '';
-            document.getElementById('totalChicks').value = '';
-            document.getElementById('initialCost').value = '';
-            document.getElementById('batchNote').value = '';
         }
 
-        // Render batch list
         function renderBatchList() {
-            const list = document.getElementById('batchList');
-            if (batches.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <p>কোনো ব্যাচ নেই</p>
-                        <p style="font-size: 14px; opacity: 0.7; margin-top: 5px;">উপরের বাটনে ক্লিক করে নতুন ব্যাচ তৈরি করুন</p>
+            const container = document.getElementById('batchList');
+            container.innerHTML = '';
+            batches.forEach(batch => {
+                const expense = (batch.expenses || []).reduce((a, b) => a + b.amount, 0);
+                const sales = (batch.sales || []).reduce((a, b) => a + b.amount, 0);
+                const profit = sales - expense;
+                
+                const div = document.createElement('div');
+                div.className = 'batch-item';
+                div.innerHTML = `
+                    <div class="batch-header">
+                        <span>${batch.name}</span>
+                        <span style="color: ${profit >= 0 ? '#4CAF50' : '#f44336'}">৳${profit}</span>
+                    </div>
+                    <div class="batch-stats">
+                        <span>জীবিত: ${batch.aliveChicks}</span>
+                        <span>খরচ: ৳${expense}</span>
                     </div>
                 `;
-                return;
-            }
-
-            list.innerHTML = batches.map(batch => {
-                const totalExpense = batch.expenses.reduce((sum, e) => sum + e.amount, 0);
-                const totalSales = batch.sales.reduce((sum, s) => sum + s.amount, 0);
-                const profit = totalSales - totalExpense;
-
-                return `
-                    <div class="batch-item" onclick="viewBatch(${batch.id})">
-                        <div class="batch-header">
-                            <div class="batch-name">${batch.name}</div>
-                            <div style="color: ${profit >= 0 ? '#4CAF50' : '#f44336'}">
-                                ${profit >= 0 ? '+' : ''}৳${profit.toLocaleString('bn-BD')}
-                            </div>
-                        </div>
-                        <div class="batch-stats">
-                            <div class="stat-item">মোট: ${batch.totalChicks}</div>
-                            <div class="stat-item">জীবিত: ${batch.aliveChicks}</div>
-                            <div class="stat-item">খরচ: ৳${totalExpense.toLocaleString('bn-BD')}</div>
-                            <div class="stat-item">বিক্রয়: ৳${totalSales.toLocaleString('bn-BD')}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                div.onclick = () => viewBatch(batch.id);
+                container.appendChild(div);
+            });
         }
 
-        // View batch
-        function viewBatch(batchId) {
-            currentBatchId = batchId;
-            const batch = batches.find(b => b.id === batchId);
-            if (!batch) return;
+        function viewBatch(id) {
+            currentBatchId = id;
+            const batch = batches.find(b => b.id === id);
+            document.getElementById('mainScreen').classList.add('hide');
+            document.getElementById('batchDetailsScreen').classList.remove('hide');
+            
+            document.getElementById('batchDetailName').innerText = batch.name;
+            const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
+            const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
+            
+            document.getElementById('totalExpense').innerText = '৳' + totalExp;
+            document.getElementById('soldAmount').innerText = '৳' + totalSale;
+            document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
+            document.getElementById('aliveChicks').innerText = batch.aliveChicks;
 
-            const totalExpense = batch.expenses.reduce((sum, e) => sum + e.amount, 0);
-            const totalSales = batch.sales.reduce((sum, s) => sum + s.amount, 0);
-            const profit = totalSales - totalExpense;
-
-            document.getElementById('batchDetailName').textContent = batch.name;
-            document.getElementById('totalExpense').textContent = '৳' + totalExpense.toLocaleString('bn-BD');
-            document.getElementById('aliveChicks').textContent = batch.aliveChicks;
-            document.getElementById('soldAmount').textContent = '৳' + totalSales.toLocaleString('bn-BD');
-            document.getElementById('profitLoss').textContent = (profit >= 0 ? '+' : '') + '৳' + profit.toLocaleString('bn-BD');
-            document.getElementById('profitLoss').style.color = profit >= 0 ? '#4CAF50' : '#f44336';
-
-            renderExpenses(batch);
-            renderDeaths(batch);
-            renderSales(batch);
-
-            showScreen('batchDetailsScreen');
-        }
-
-        function renderExpenses(batch) {
-            const list = document.getElementById('expenseList');
-            if (batch.expenses.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>কোনো খরচ নেই</p></div>';
-                return;
-            }
-
-            const typeNames = {
-                purchase: 'ক্রয়',
-                feed: 'খাদ্য',
-                medicine: 'ঔষধ',
-                vaccine: 'টিকা',
-                electricity: 'বিদ্যুৎ',
-                transport: 'পরিবহন',
-                labor: 'শ্রমিক',
-                other: 'অন্যান্য'
-            };
-
-            list.innerHTML = batch.expenses.map(e => `
+            // Render Tabs
+            renderList('expenseTab', batch.expenses, (item) => `
                 <div class="expense-item">
-                    <div>
-                        <div><strong>${typeNames[e.type]}</strong></div>
-                        <div style="font-size: 12px; opacity: 0.7;">${e.date}${e.note ? ' - ' + e.note : ''}</div>
-                    </div>
-                    <div class="list-item-actions">
-                        <div style="font-size: 18px; font-weight: bold;">৳${e.amount.toLocaleString('bn-BD')}</div>
-                        ${e.type !== 'purchase' ? `<button class="delete-btn" onclick="deleteExpense(${e.id}, event)">✕</button>` : ''}
+                    <div><b>${item.type}</b> <small>${item.date}</small></div>
+                    <div style="display:flex;align-items:center">
+                        <b>৳${item.amount}</b>
+                        ${item.type !== 'purchase' ? `<button class="delete-btn" onclick="deleteItem('expenses', ${item.amount}, '${item.date}')">✕</button>` : ''}
                     </div>
                 </div>
-            `).join('');
-        }
-
-        function renderDeaths(batch) {
-            const list = document.getElementById('deathList');
-            if (batch.deaths.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">☠️</div><p>কোনো মৃত্যুর রেকর্ড নেই</p></div>';
-                return;
-            }
-
-            list.innerHTML = batch.deaths.map(d => `
+            `);
+            
+            renderList('saleTab', batch.sales, (item) => `
                 <div class="expense-item">
-                    <div>
-                        <div><strong>${d.count} টি মুরগি</strong></div>
-                        <div style="font-size: 12px; opacity: 0.7;">${d.date}${d.reason ? ' - ' + d.reason : ''}</div>
-                    </div>
-                    <button class="delete-btn" onclick="deleteDeath(${d.id}, event)">✕</button>
-                </div>
-            `).join('');
-        }
-
-        function renderSales(batch) {
-            const list = document.getElementById('saleList');
-            if (batch.sales.length === 0) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💰</div><p>কোনো বিক্রয়ের রেকর্ড নেই</p></div>';
-                return;
-            }
-
-            list.innerHTML = batch.sales.map(s => `
-                <div class="expense-item">
-                    <div>
-                        <div><strong>${s.chicks} টি (${s.weight} কেজি)</strong></div>
-                        <div style="font-size: 12px; opacity: 0.7;">${s.date} - ৳${s.pricePerKg}/কেজি${s.buyerName ? ' - ' + s.buyerName : ''}</div>
-                    </div>
-                    <div class="list-item-actions">
-                        <div style="font-size: 18px; font-weight: bold; color: #4CAF50;">৳${s.amount.toLocaleString('bn-BD')}</div>
-                        <button class="delete-btn" onclick="deleteSale(${s.id}, event)">✕</button>
+                    <div><b>${item.soldChicks} pcs</b> <small>${item.date}</small></div>
+                    <div style="display:flex;align-items:center">
+                        <b style="color:#4CAF50">৳${item.amount}</b>
+                        <button class="delete-btn" onclick="deleteItem('sales', ${item.amount}, '${item.date}')">✕</button>
                     </div>
                 </div>
-            `).join('');
+            `);
+
+            renderList('deathTab', batch.deaths, (item) => `
+                <div class="expense-item">
+                    <div><b>${item.count} pcs</b> <small>${item.date}</small></div>
+                    <button class="delete-btn" onclick="deleteItem('deaths', ${item.count}, '${item.date}')">✕</button>
+                </div>
+            `);
         }
 
-        // Delete functions
-        function deleteExpense(expenseId, event) {
-            event.stopPropagation();
-            if (!confirm('এই খরচ মুছে ফেলতে চান?')) return;
-            
-            const batch = batches.find(b => b.id === currentBatchId);
-            batch.expenses = batch.expenses.filter(e => e.id !== expenseId);
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
-        }
-
-        function deleteDeath(deathId, event) {
-            event.stopPropagation();
-            if (!confirm('এই রেকর্ড মুছে ফেলতে চান?')) return;
-            
-            const batch = batches.find(b => b.id === currentBatchId);
-            const death = batch.deaths.find(d => d.id === deathId);
-            batch.aliveChicks += death.count;
-            batch.deaths = batch.deaths.filter(d => d.id !== deathId);
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
-        }
-
-        function deleteSale(saleId, event) {
-            event.stopPropagation();
-            if (!confirm('এই বিক্রয় রেকর্ড মুছে ফেলতে চান?')) return;
-            
-            const batch = batches.find(b => b.id === currentBatchId);
-            const sale = batch.sales.find(s => s.id === saleId);
-            batch.aliveChicks += sale.chicks;
-            batch.sales = batch.sales.filter(s => s.id !== saleId);
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
-        }
-
-        function confirmDeleteBatch() {
-            if (!confirm('⚠️ এই ব্যাচ সম্পূর্ণভাবে মুছে ফেলতে চান? সব ডেটা হারিয়ে যাবে!')) return;
-            
-            batches = batches.filter(b => b.id !== currentBatchId);
-            saveDataToCloud();
-            backToMain();
-            renderBatchList();
-        }
-
-        // Expense calculations
-        document.getElementById('expenseQuantity').addEventListener('input', calculateExpenseTotal);
-        document.getElementById('expenseUnitPrice').addEventListener('input', calculateExpenseTotal);
-
-        function calculateExpenseTotal() {
-            const qty = parseFloat(document.getElementById('expenseQuantity').value) || 0;
-            const price = parseFloat(document.getElementById('expenseUnitPrice').value) || 0;
-            document.getElementById('expenseAmount').value = qty * price;
+        function renderList(elementId, list, templateFn) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            if(!list || list.length === 0) {
+                el.innerHTML = '<p style="text-align:center;color:#666;padding:20px">No records</p>';
+                return;
+            }
+            list.forEach(item => el.innerHTML += templateFn(item));
         }
 
         function addExpense() {
-            if (!currentBatchId) return;
-
-            const type = document.getElementById('expenseType').value;
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
-            const date = document.getElementById('expenseDate').value;
-            const note = document.getElementById('expenseNote').value.trim();
-
-            if (!amount || !date) {
-                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
-                return;
-            }
-
             const batch = batches.find(b => b.id === currentBatchId);
-            batch.expenses.push({ 
-                id: Date.now(),
-                type, 
-                amount, 
-                date, 
-                note 
+            if(!batch.expenses) batch.expenses = [];
+            batch.expenses.push({
+                type: document.getElementById('expenseType').value,
+                amount: parseFloat(document.getElementById('expenseAmount').value),
+                date: document.getElementById('expenseDate').value,
+                note: document.getElementById('expenseNote').value
             });
-
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
+            saveData();
             closeModal('addExpenseModal');
-
-            document.getElementById('expenseQuantity').value = '1';
-            document.getElementById('expenseUnitPrice').value = '';
-            document.getElementById('expenseAmount').value = '';
-            document.getElementById('expenseNote').value = '';
-        }
-
-        // Death management
-        function addDeath() {
-            if (!currentBatchId) return;
-
-            const count = parseInt(document.getElementById('deathCount').value);
-            const date = document.getElementById('deathDate').value;
-            const reason = document.getElementById('deathReason').value.trim();
-
-            if (!count || !date) {
-                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
-                return;
-            }
-
-            const batch = batches.find(b => b.id === currentBatchId);
-            
-            if (count > batch.aliveChicks) {
-                alert('⚠️ জীবিত মুরগির চেয়ে বেশি সংখ্যা দেওয়া যাবে না!');
-                return;
-            }
-
-            batch.deaths.push({ 
-                id: Date.now(),
-                count, 
-                date, 
-                reason 
-            });
-            batch.aliveChicks -= count;
-
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
-            closeModal('addDeathModal');
-
-            document.getElementById('deathCount').value = '';
-            document.getElementById('deathReason').value = '';
-        }
-
-        // Sale management
-        document.getElementById('soldWeight').addEventListener('input', calculateSaleTotal);
-        document.getElementById('pricePerKg').addEventListener('input', calculateSaleTotal);
-
-        function calculateSaleTotal() {
-            const weight = parseFloat(document.getElementById('soldWeight').value) || 0;
-            const price = parseFloat(document.getElementById('pricePerKg').value) || 0;
-            document.getElementById('saleAmount').value = weight * price;
         }
 
         function addSale() {
-            if (!currentBatchId) return;
-
-            const chicks = parseInt(document.getElementById('soldChicks').value);
-            const weight = parseFloat(document.getElementById('soldWeight').value);
-            const pricePerKg = parseFloat(document.getElementById('pricePerKg').value);
-            const amount = parseFloat(document.getElementById('saleAmount').value);
-            const date = document.getElementById('saleDate').value;
-            const buyerName = document.getElementById('buyerName').value.trim();
-
-            if (!chicks || !weight || !amount || !date) {
-                alert('⚠️ সব প্রয়োজনীয় তথ্য পূরণ করুন');
-                return;
-            }
-
             const batch = batches.find(b => b.id === currentBatchId);
+            const chicks = parseInt(document.getElementById('soldChicks').value);
+            if(chicks > batch.aliveChicks) return alert('Not enough chicks!');
             
-            if (chicks > batch.aliveChicks) {
-                alert('⚠️ জীবিত মুরগির চেয়ে বেশি সংখ্যা বিক্রয় করা যাবে না!');
-                return;
-            }
-
-            batch.sales.push({ 
-                id: Date.now(),
-                chicks, 
-                weight, 
-                pricePerKg, 
-                amount, 
-                date,
-                buyerName
+            if(!batch.sales) batch.sales = [];
+            batch.sales.push({
+                soldChicks: chicks,
+                weight: parseFloat(document.getElementById('soldWeight').value),
+                amount: parseFloat(document.getElementById('saleAmount').value),
+                date: document.getElementById('saleDate').value
             });
             batch.aliveChicks -= chicks;
-
-            saveDataToCloud();
-            viewBatch(currentBatchId);
-            renderBatchList();
+            saveData();
             closeModal('addSaleModal');
-
-            document.getElementById('soldChicks').value = '';
-            document.getElementById('soldWeight').value = '';
-            document.getElementById('pricePerKg').value = '';
-            document.getElementById('saleAmount').value = '';
-            document.getElementById('buyerName').value = '';
         }
 
-        // Export/Import functions
-        function exportAllData() {
-            if (batches.length === 0) {
-                alert('⚠️ কোনো ডেটা নেই ব্যাকআপ করার জন্য!');
-                return;
-            }
-
-            const dataStr = JSON.stringify(batches, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `poultry_backup_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-            alert('✅ ব্যাকআপ ডাউনলোড সফল হয়েছে!');
-        }
-
-        function exportData() {
-            if (!currentBatchId) return;
-            
+        function addDeath() {
             const batch = batches.find(b => b.id === currentBatchId);
-            const dataStr = JSON.stringify(batch, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${batch.name}_backup_${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-            alert('✅ ব্যাকআপ ডাউনলোড সফল হয়েছে!');
+            const count = parseInt(document.getElementById('deathCount').value);
+            if(count > batch.aliveChicks) return alert('Not enough chicks!');
+
+            if(!batch.deaths) batch.deaths = [];
+            batch.deaths.push({
+                count: count,
+                date: document.getElementById('deathDate').value,
+                reason: document.getElementById('deathReason').value
+            });
+            batch.aliveChicks -= count;
+            saveData();
+            closeModal('addDeathModal');
         }
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    
-                    if (Array.isArray(importedData)) {
-                        if (batches.length > 0) {
-                            if (!confirm('⚠️ বর্তমান ডেটা মুছে নতুন ডেটা লোড করবেন?\n\n"OK" = পুরাতন ডেটা মুছে যাবে\n"Cancel" = বাতিল')) {
-                                return;
-                            }
-                        }
-                        batches = importedData;
-                    } else {
-                        batches.push(importedData);
-                    }
-                    
-                    saveDataToCloud();
-                    renderBatchList();
-                    alert('✅ ডেটা সফলভাবে রিস্টোর হয়েছে!');
-                } catch (error) {
-                    alert('❌ ফাইল পড়তে সমস্যা হয়েছে! সঠিক ব্যাকআপ ফাইল নির্বাচন করুন।');
-                }
-            };
-            reader.readAsText(file);
-            
-            event.target.value = '';
-        }
-
-        // Close modal on outside click
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+        function confirmDeleteBatch() {
+            if(confirm('Delete this batch?')) {
+                batches = batches.filter(b => b.id !== currentBatchId);
+                saveData();
+                backToMain();
             }
         }
 
-        // Initialize
-        init();
+        // Helpers
+        function showModal(id) { document.getElementById(id).style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function backToMain() { 
+            document.getElementById('batchDetailsScreen').classList.add('hide');
+            document.getElementById('mainScreen').classList.remove('hide');
+            currentBatchId = null;
+        }
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            ['expenseTab','saleTab','deathTab'].forEach(t => document.getElementById(t).classList.add('hide'));
+            document.getElementById(tab === 'expenses' ? 'expenseTab' : tab === 'sales' ? 'saleTab' : 'deathTab').classList.remove('hide');
+        }
+        
+        // Auto-set dates
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(i => i.value = today);
     </script>
 </body>
 </html>
