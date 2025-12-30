@@ -317,37 +317,37 @@
         }
 
         function viewBatch(id) {
-    currentBatchId = id;
-    const batch = batches.find(b => b.id === id);
-    document.getElementById('mainScreen').classList.add('hide');
-    document.getElementById('batchDetailsScreen').classList.remove('hide');
+              currentBatchId = id;
+              const batch = batches.find(b => b.id === id);
+              document.getElementById('mainScreen').classList.add('hide');
+              document.getElementById('batchDetailsScreen').classList.remove('hide');
     
-    document.getElementById('batchDetailName').innerText = batch.name;
-    const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
-    const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
+              document.getElementById('batchDetailName').innerText = batch.name;
+              const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
+              const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
     
-    document.getElementById('totalExpense').innerText = '৳' + totalExp;
-    document.getElementById('soldAmount').innerText = '৳' + totalSale;
-    document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
-    document.getElementById('aliveChicks').innerText = batch.aliveChicks;
+              document.getElementById('totalExpense').innerText = '৳' + totalExp;
+              document.getElementById('soldAmount').innerText = '৳' + totalSale;
+              document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
+              document.getElementById('aliveChicks').innerText = batch.aliveChicks;
 
-    // --- নতুন খরচ বিশ্লেষণ কোড (Breakdown) ---
-    const breakdownContainer = document.getElementById('expenseBreakdown');
-    const summary = {};
+              // --- নতুন খরচ বিশ্লেষণ কোড (Breakdown) ---
+              const breakdownContainer = document.getElementById('expenseBreakdown');
+              const summary = {};
     
-    (batch.expenses || []).forEach(exp => {
-        const type = exp.type || 'অন্যান্য';
-        summary[type] = (summary[type] || 0) + exp.amount;
-    });
+              (batch.expenses || []).forEach(exp => {
+                  const type = exp.type || 'অন্যান্য';
+                  summary[type] = (summary[type] || 0) + exp.amount;
+              });
 
-    breakdownContainer.innerHTML = '';
-    for (const type in summary) {
-        breakdownContainer.innerHTML += `
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #444;">
-                <span>${type}:</span>
-                <span style="font-weight: bold;">৳${summary[type]}</span>
-            </div>`;
-    }
+              breakdownContainer.innerHTML = '';
+              for (const type in summary) {
+                  breakdownContainer.innerHTML += `
+                      <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #444;">
+                          <span>${type}:</span>
+                          <span style="font-weight: bold;">৳${summary[type]}</span>
+                      </div>`;
+              }
 
             renderList('deathTab', batch.deaths, (item) => `
                 <div class="expense-item">
