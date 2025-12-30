@@ -44,16 +44,6 @@
         .summary-card { background: linear-gradient(135deg, #4CAF50, #45a049); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .loading { text-align: center; padding: 50px; }
-       .delete-btn {
-            background: #e53935;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            padding: 5px 10px;
-            margin-left: 10px;
-            cursor: pointer;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -327,67 +317,45 @@
         }
 
         function viewBatch(id) {
-             currentBatchId = id;
-             const batch = batches.find(b => b.id === id);
-             document.getElementById('mainScreen').classList.add('hide');
-             document.getElementById('batchDetailsScreen').classList.remove('hide');
+              currentBatchId = id;
+              const batch = batches.find(b => b.id === id);
+              document.getElementById('mainScreen').classList.add('hide');
+              document.getElementById('batchDetailsScreen').classList.remove('hide');
     
-             document.getElementById('batchDetailName').innerText = batch.name;
-             const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
-             const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
+              document.getElementById('batchDetailName').innerText = batch.name;
+              const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
+              const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
     
-             document.getElementById('totalExpense').innerText = '৳' + totalExp;
-             document.getElementById('soldAmount').innerText = '৳' + totalSale;
-             document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
-             document.getElementById('aliveChicks').innerText = batch.aliveChicks;
-         
-             // খাত ভিত্তিক খরচ বিশ্লেষণ (Summary)
-             const breakdownContainer = document.getElementById('expenseBreakdown');
-             const summary = {};
-             (batch.expenses || []).forEach(exp => {
-                 const type = exp.type || 'অন্যান্য';
-                 summary[type] = (summary[type] || 0) + exp.amount;
-             });
+              document.getElementById('totalExpense').innerText = '৳' + totalExp;
+              document.getElementById('soldAmount').innerText = '৳' + totalSale;
+              document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
+              document.getElementById('aliveChicks').innerText = batch.aliveChicks;
 
-             breakdownContainer.innerHTML = '';
-             for (const type in summary) {
-                 breakdownContainer.innerHTML += `
-                     <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #444; padding: 5px 0;">
-                         <span>${type}:</span>
-                         <span style="font-weight: bold;">৳${summary[type]}</span>
-                     </div>`;
-             }
-
-             // খরচ ইতিহাস এবং ডিলিট বাটন
-             renderList('expenseTab', batch.expenses, (item, index) => `
-                 <div class="expense-item">
-                     <div><b>${item.type}</b> <br><small>${item.date}</small></div>
-                     <div style="display:flex;align-items:center">
-                         <b>৳${item.amount}</b>
-                         <button class="delete-btn" onclick="deleteHistoryItem('expenses', ${index})">✕</button>
-                     </div>
-                 </div>
-             `);
-           
-         function deleteHistoryItem(category, index) {
-             if (!confirm('আপনি কি এই রেকর্ডটি নিশ্চিতভাবে ডিলিট করতে চান?')) return;
-
-            const batch = batches.find(b => b.id === currentBatchId);
+              // --- নতুন খরচ বিশ্লেষণ কোড (Breakdown) ---
+              const breakdownContainer = document.getElementById('expenseBreakdown');
+              const summary = {};
     
-            if (category === 'sales') {
-                batch.aliveChicks += parseInt(batch.sales[index].soldChicks);
-            } else if (category === 'deaths') {
-                batch.aliveChicks += parseInt(batch.deaths[index].count);
-            }
+              (batch.expenses || []).forEach(exp => {
+                  const type = exp.type || 'অন্যান্য';
+                  summary[type] = (summary[type] || 0) + exp.amount;
+              });
 
-            // নির্দিষ্ট এন্ট্রিটি ডিলিট করা
-            batch[category].splice(index, 1);
+              breakdownContainer.innerHTML = '';
+              for (const type in summary) {
+                  breakdownContainer.innerHTML += `
+                      <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #444;">
+                          <span>${type}:</span>
+                          <span style="font-weight: bold;">৳${summary[type]}</span>
+                      </div>`;
+              }
 
-            saveData(); // ডেটাবেজে সেভ
-            viewBatch(currentBatchId); // স্ক্রিন রিফ্রেশ
-        }        
-    // বিক্রয় ও মৃত্যু ইতিহাস (বাকি রেন্ডার লিস্টগুলো একই থাকবে)
-
+            renderList('deathTab', batch.deaths, (item) => `
+                <div class="expense-item">
+                    <div><b>${item.count} pcs</b> <small>${item.date}</small></div>
+                    <button class="delete-btn" onclick="deleteItem('deaths', ${item.count}, '${item.date}')">✕</button>
+                </div>
+            `);
+        }
 
         function renderList(elementId, list, templateFn) {
             const el = document.getElementById(elementId);
