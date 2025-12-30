@@ -293,51 +293,64 @@
         }
 
         function viewBatch(id) {
-            currentBatchId = id;
-            const batch = batches.find(b => b.id === id);
-            document.getElementById('mainScreen').classList.add('hide');
-            document.getElementById('batchDetailsScreen').classList.remove('hide');
-            document.getElementById('batchDetailName').innerText = batch.name;
+    currentBatchId = id;
+    const batch = batches.find(b => b.id === id);
+    document.getElementById('mainScreen').classList.add('hide');
+    document.getElementById('batchDetailsScreen').classList.remove('hide');
+    document.getElementById('batchDetailName').innerText = batch.name;
 
-            const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
-            const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
+    const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
+    const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
 
-            document.getElementById('totalExpense').innerText = '৳' + totalExp;
-            document.getElementById('soldAmount').innerText = '৳' + totalSale;
-            document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
-            document.getElementById('aliveChicks').innerText = batch.aliveChicks;
+    document.getElementById('totalExpense').innerText = '৳' + totalExp;
+    document.getElementById('soldAmount').innerText = '৳' + totalSale;
+    document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
+    document.getElementById('aliveChicks').innerText = batch.aliveChicks;
 
-            // Breakdown
-            const summary = {};
-            (batch.expenses || []).forEach(exp => {
-                const type = exp.type || 'অন্যান্য';
-                summary[type] = (summary[type] || 0) + exp.amount;
-            });
-            const breakdownContainer = document.getElementById('expenseBreakdown');
-            breakdownContainer.innerHTML = '';
-            for (const type in summary) {
-                breakdownContainer.innerHTML += `<div style="display:flex;justify-content:space-between;border-bottom:1px dashed #444;"><span>${type}:</span><b>৳${summary[type]}</b></div>`;
-            }
+    // --- বাগ ফিক্সড সামারি সেকশন ---
+    const summary = {};
+    (batch.expenses || []).forEach(exp => {
+        // সব খরচকে ছোট হাতের অক্ষরে রূপান্তর করা হচ্ছে যাতে "Feed" এবং "feed" এক হয়ে যায়
+        let type = (exp.type || 'অন্যান্য').toLowerCase().trim();
+        
+        // যদি ড্রপডাউন থেকে বাংলাসহ আসে, তবে সেটিকেও নির্দিষ্ট ক্যাটাগরিতে রাখা
+        if (type.includes('feed') || type.includes('খাদ্য')) type = 'feed';
+        if (type.includes('medicine') || type.includes('ঔষধ')) type = 'medicine';
+        if (type.includes('transport') || type.includes('পরিবহন')) type = 'transportation';
+        if (type.includes('purchase') || type.includes('বাচ্চা')) type = 'purchase';
 
-            // Tabs history
-            renderList('expenseTab', batch.expenses, (item, idx) => `
-                <div class="expense-item">
-                    <div><b>${item.type}</b> <br><small>${item.date}</small></div>
-                    <div style="display:flex;align-items:center"><b>৳${item.amount}</b> <button class="delete-btn" onclick="deleteItem('expenses', ${idx})">✕</button></div>
-                </div>`);
+        summary[type] = (summary[type] || 0) + exp.amount;
+    });
 
-            renderList('saleTab', batch.sales, (item, idx) => `
-                <div class="expense-item">
-                    <div><b>${item.soldChicks} টি</b> <br><small>${item.date}</small></div>
-                    <div style="display:flex;align-items:center"><b>৳${item.amount}</b> <button class="delete-btn" onclick="deleteItem('sales', ${idx})">✕</button></div>
-                </div>`);
+    const breakdownContainer = document.getElementById('expenseBreakdown');
+    breakdownContainer.innerHTML = '';
+    for (const type in summary) {
+        breakdownContainer.innerHTML += `
+            <div style="display:flex;justify-content:space-between;border-bottom:1px dashed #444;text-transform: capitalize;">
+                <span>${type}:</span>
+                <b>৳${summary[type]}</b>
+            </div>`;
+    }
 
-            renderList('deathTab', batch.deaths, (item, idx) => `
-                <div class="expense-item">
-                    <div><b>${item.count} টি</b> <br><small>${item.date}</small></div>
-                    <button class="delete-btn" onclick="deleteItem('deaths', ${idx})">✕</button>
-                </div>`);
-        }
+    // হিস্ট্রি ট্যাবগুলো রেন্ডার করা
+    renderList('expenseTab', batch.expenses, (item, idx) => `
+        <div class="expense-item">
+            <div><b>${item.type}</b> <br><small>${item.date}</small></div>
+            <div style="display:flex;align-items:center"><b>৳${item.amount}</b> <button class="delete-btn" onclick="deleteItem('expenses', ${idx})">✕</button></div>
+        </div>`);
+
+    renderList('saleTab', batch.sales, (item, idx) => `
+        <div class="expense-item">
+            <div><b>${item.soldChicks} টি</b> <br><small>${item.date}</small></div>
+            <div style="display:flex;align-items:center"><b>৳${item.amount}</b> <button class="delete-btn" onclick="deleteItem('sales', ${idx})">✕</button></div>
+        </div>`);
+
+    renderList('deathTab', batch.deaths, (item, idx) => `
+        <div class="expense-item">
+            <div><b>${item.count} টি</b> <br><small>${item.date}</small></div>
+            <button class="delete-btn" onclick="deleteItem('deaths', ${idx})">✕</button>
+        </div>`);
+}
 
         function renderList(elementId, list, templateFn) {
             const el = document.getElementById(elementId);
