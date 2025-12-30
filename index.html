@@ -102,6 +102,12 @@
             </div>
 
             <div class="card">
+                <h3 style="margin-bottom: 10px; color: #4CAF50; font-size: 16px;">খাত ভিত্তিক খরচ (Summary):</h3>
+                <div id="expenseBreakdown" style="font-size: 14px; line-height: 1.8;">
+                    </div>
+            </div>
+
+            <div class="card">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <button class="btn" style="margin:0" onclick="showModal('addExpenseModal')">+ খরচ</button>
                     <button class="btn" style="margin:0" onclick="showModal('addSaleModal')">+ বিক্রয়</button>
@@ -311,40 +317,37 @@
         }
 
         function viewBatch(id) {
-            currentBatchId = id;
-            const batch = batches.find(b => b.id === id);
-            document.getElementById('mainScreen').classList.add('hide');
-            document.getElementById('batchDetailsScreen').classList.remove('hide');
-            
-            document.getElementById('batchDetailName').innerText = batch.name;
-            const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
-            const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
-            
-            document.getElementById('totalExpense').innerText = '৳' + totalExp;
-            document.getElementById('soldAmount').innerText = '৳' + totalSale;
-            document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
-            document.getElementById('aliveChicks').innerText = batch.aliveChicks;
+    currentBatchId = id;
+    const batch = batches.find(b => b.id === id);
+    document.getElementById('mainScreen').classList.add('hide');
+    document.getElementById('batchDetailsScreen').classList.remove('hide');
+    
+    document.getElementById('batchDetailName').innerText = batch.name;
+    const totalExp = (batch.expenses||[]).reduce((a, b) => a + b.amount, 0);
+    const totalSale = (batch.sales||[]).reduce((a, b) => a + b.amount, 0);
+    
+    document.getElementById('totalExpense').innerText = '৳' + totalExp;
+    document.getElementById('soldAmount').innerText = '৳' + totalSale;
+    document.getElementById('profitLoss').innerText = '৳' + (totalSale - totalExp);
+    document.getElementById('aliveChicks').innerText = batch.aliveChicks;
 
-            // Render Tabs
-            renderList('expenseTab', batch.expenses, (item) => `
-                <div class="expense-item">
-                    <div><b>${item.type}</b> <small>${item.date}</small></div>
-                    <div style="display:flex;align-items:center">
-                        <b>৳${item.amount}</b>
-                        ${item.type !== 'purchase' ? `<button class="delete-btn" onclick="deleteItem('expenses', ${item.amount}, '${item.date}')">✕</button>` : ''}
-                    </div>
-                </div>
-            `);
-            
-            renderList('saleTab', batch.sales, (item) => `
-                <div class="expense-item">
-                    <div><b>${item.soldChicks} pcs</b> <small>${item.date}</small></div>
-                    <div style="display:flex;align-items:center">
-                        <b style="color:#4CAF50">৳${item.amount}</b>
-                        <button class="delete-btn" onclick="deleteItem('sales', ${item.amount}, '${item.date}')">✕</button>
-                    </div>
-                </div>
-            `);
+    // --- নতুন খরচ বিশ্লেষণ কোড (Breakdown) ---
+    const breakdownContainer = document.getElementById('expenseBreakdown');
+    const summary = {};
+    
+    (batch.expenses || []).forEach(exp => {
+        const type = exp.type || 'অন্যান্য';
+        summary[type] = (summary[type] || 0) + exp.amount;
+    });
+
+    breakdownContainer.innerHTML = '';
+    for (const type in summary) {
+        breakdownContainer.innerHTML += `
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #444;">
+                <span>${type}:</span>
+                <span style="font-weight: bold;">৳${summary[type]}</span>
+            </div>`;
+    }
 
             renderList('deathTab', batch.deaths, (item) => `
                 <div class="expense-item">
