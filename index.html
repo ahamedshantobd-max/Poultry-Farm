@@ -138,21 +138,26 @@
     </div>
 
     <div id="addExpenseModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span>
-            <h2>খরচ যোগ করুন</h2>
-            <div class="input-group">
-                <label>ধরন</label>
-                <select id="expenseType">
-                    <option value="feed">খাদ্য</option>
-                    <option value="medicine">ঔষধ</option>
-                    <option value="other">অন্যান্য</option>
-                </select>
-            </div>
-            <div class="input-group"><label>টাকা</label><input type="number" id="expenseAmount"></div>
-            <div class="input-group"><label>তারিখ</label><input type="date" id="expenseDate"></div>
-            <div class="input-group"><label>নোট</label><input type="text" id="expenseNote"></div>
-            <button class="btn" onclick="addExpense()">যোগ করুন</button>
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span>
+        <h2>খরচ যোগ করুন</h2>
+        <div class="input-group">
+            <label>ধরন (Expense Type)</label>
+            <select id="expenseType">
+                <option value="খাদ্য (Feed)">খাদ্য (Feed)</option>
+                <option value="ঔষধ (Medicine)">ঔষধ (Medicine)</option>
+                <option value="বাচ্চার দাম (Chicks Price)">বাচ্চার দাম (Chicks Price)</option>
+                <option value="পরিবহন (Transportation)">পরিবহন (Transportation)</option>
+                <option value="তুষ/লিটার (Litter)">তুষ/লিটার (Litter)</option>
+                <option value="বিদ্যুৎ বিল (Electricity)">বিদ্যুৎ বিল (Electricity)</option>
+                <option value="শ্রমিক খরচ (Worker Salary)">শ্রমিক খরচ (Worker Salary)</option>
+                <option value="অন্যান্য (Other)">অন্যান্য (Other)</option>
+            </select>
+        </div>
+        <div class="input-group"><label>টাকা (Amount)</label><input type="number" id="expenseAmount"></div>
+        <div class="input-group"><label>তারিখ (Date)</label><input type="date" id="expenseDate"></div>
+        <div class="input-group"><label>নোট (Note)</label><input type="text" id="expenseNote" placeholder="অতিরিক্ত তথ্য (ঐচ্ছিক)"></div>
+        <button class="btn" onclick="addExpense()">যোগ করুন</button>
         </div>
     </div>
 
